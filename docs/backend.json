@@ -75,6 +75,42 @@
         "verificationStatus",
         "verificationResult"
       ]
+    },
+    "SystemStats": {
+      "title": "SystemStats",
+      "type": "object",
+      "description": "Real-time statistics for the entire system.",
+      "properties": {
+        "totalUniversities": { "type": "number" },
+        "certificatesVerifiedToday": { "type": "number" },
+        "fraudDetected24h": { "type": "number" },
+        "activeVerifications": { "type": "number" },
+        "systemUptime": { "type": "number", "description": "Percentage" }
+      }
+    },
+    "University": {
+      "title": "University",
+      "type": "object",
+      "description": "Represents a university or institution.",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "state": { "type": "string" },
+        "type": { "type": "string", "enum": ["Government", "Private", "Deemed", "Foreign"] },
+        "integrationStatus": { "type": "string", "enum": ["Active", "Pending", "Error"] }
+      }
+    },
+    "VerificationActivity": {
+      "title": "VerificationActivity",
+      "type": "object",
+      "description": "Represents a single verification event.",
+      "properties": {
+        "id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "universityName": { "type": "string" },
+        "state": { "type": "string" },
+        "status": { "type": "string", "enum": ["Verified", "Fraudulent", "Pending"] }
+      }
     }
   },
   "auth": {
@@ -104,6 +140,18 @@
       "/roles_employer/{userId}": {
         "schema": { "$ref": "#/entities/User" },
         "description": "Collection to store employer user roles. Existence of a document with the user's ID grants employer privileges."
+      },
+      "/system/stats": {
+        "schema": { "$ref": "#/entities/SystemStats" },
+        "description": "Singleton document for system-wide statistics."
+      },
+      "/universities/{universityId}": {
+        "schema": { "$ref": "#/entities/University" },
+        "description": "Stores information about registered universities."
+      },
+      "/verifications/{verificationId}": {
+        "schema": { "$ref": "#/entities/VerificationActivity" },
+        "description": "Log of all verification activities."
       }
     }
   }

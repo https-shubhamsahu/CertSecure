@@ -81,6 +81,12 @@ export default function AppLayout({
                   <span>Analytics</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Users" isActive={pathname === '/app/users'} onClick={() => router.push('/app/users')}>
+                  <Users />
+                  <span>Users</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
           </>
         );
       case 'University':

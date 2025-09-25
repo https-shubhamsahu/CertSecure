@@ -1,14 +1,14 @@
+
 import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { Poppins } from 'next/font/google';
+import { Inter } from 'next/font/google';
 
-const poppins = Poppins({
+const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700', '800', '900']
+  variable: '--font-inter',
 });
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={cn(
         "h-full antialiased",
-        poppins.variable,
+        inter.variable,
         "font-sans"
       )}>
         <FirebaseClientProvider>

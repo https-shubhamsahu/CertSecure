@@ -2,90 +2,75 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, ShieldAlert, Building2, Settings } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
-const data = [
-  { name: 'Jan', verifications: 4000, fraud: 24 },
-  { name: 'Feb', verifications: 3000, fraud: 13 },
-  { name: 'Mar', verifications: 2000, fraud: 98 },
-  { name: 'Apr', verifications: 2780, fraud: 39 },
-  { name: 'May', verifications: 1890, fraud: 48 },
-  { name: 'Jun', verifications: 2390, fraud: 38 },
-  { name: 'Jul', verifications: 3490, fraud: 43 },
-];
-
+import { Button } from '@/components/ui/button';
+import { Check, ChevronDown, Clock, Search, ShieldAlert, Users, X, Map } from 'lucide-react';
+import { adminDashboardStats, universityDistributionData, verificationTrendData } from '@/lib/admin-dashboard-data';
+import StatCards from './admin/StatCards';
+import InteractiveMap from './admin/InteractiveMap';
+import VerificationTrendChart from './admin/charts/VerificationChart';
+import UniversityDistributionChart from './admin/charts/UniversityDistributionChart';
+import RecentActivity from './admin/RecentActivity';
 
 export default function AdminDashboard({ user }: { user: any }) {
     return (
-        <div className="grid gap-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-glass">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                        <Users className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">10,234</div>
-                        <p className="text-xs text-muted-foreground">+5.2% from last month</p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-glass">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Fraud Alerts</CardTitle>
-                        <ShieldAlert className="h-4 w-4 text-destructive" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-destructive">12</div>
-                        <p className="text-xs text-muted-foreground">Action Required</p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-glass">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Universities</CardTitle>
-                        <Building2 className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">89</div>
-                        <p className="text-xs text-muted-foreground">+3 since last week</p>
-                    </CardContent>
-                </Card>
-                <Card className="bg-glass">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">System Status</CardTitle>
-                        <Settings className="h-4 w-4 text-green-500" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-500">Operational</div>
-                        <p className="text-xs text-muted-foreground">All systems normal</p>
-                    </CardContent>
-                </Card>
-            </div>
+        <div className="space-y-6">
+            <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 className="text-3xl font-bold tracking-tighter">Admin Dashboard</h1>
+                    <p className="text-muted-foreground">Welcome back, {user.firstName}. Here's the nationwide overview.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="relative w-full md:w-64">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input placeholder="Search universities..." className="bg-background/80 w-full rounded-md border py-2 pl-10 pr-4 text-sm" />
+                    </div>
+                    <Button variant="outline">
+                        <Map className="mr-2 h-4 w-4" />
+                        View Regions
+                    </Button>
+                </div>
+            </header>
             
-            <Card className="col-span-1 lg:col-span-2 bg-glass">
+            <StatCards stats={adminDashboardStats} />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="lg:col-span-2 bg-glass">
+                    <CardHeader>
+                        <CardTitle>Nationwide Participation</CardTitle>
+                        <CardDescription>University registration status across all states and UTs.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <InteractiveMap />
+                    </CardContent>
+                </Card>
+                <div className="space-y-6">
+                    <Card className="bg-glass">
+                        <CardHeader>
+                            <CardTitle>Recent Activity</CardTitle>
+                            <CardDescription>Live feed of verifications and alerts.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <RecentActivity />
+                        </CardContent>
+                    </Card>
+                    <Card className="bg-glass">
+                        <CardHeader>
+                            <CardTitle>University Distribution</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <UniversityDistributionChart data={universityDistributionData} />
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+
+            <Card className="bg-glass">
                 <CardHeader>
-                    <CardTitle>System Overview</CardTitle>
-                    <CardDescription>Real-time verification & fraud statistics</CardDescription>
+                    <CardTitle>Verification Trends</CardTitle>
+                    <CardDescription>Last 12 months of activity.</CardDescription>
                 </CardHeader>
-                <CardContent className="pl-2">
-                    <ResponsiveContainer width="100%" height={350}>
-                        <BarChart data={data}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted) / 0.2)" />
-                            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
-                            <Tooltip
-                              contentStyle={{
-                                backgroundColor: 'hsl(var(--background) / 0.8)',
-                                backdropFilter: 'blur(10px)',
-                                borderColor: 'hsl(var(--border))',
-                                color: 'hsl(var(--foreground))'
-                              }}
-                            />
-                            <Legend wrapperStyle={{fontSize: "14px"}}/>
-                            <Bar dataKey="verifications" fill="hsl(var(--primary))" name="Verifications" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="fraud" fill="hsl(var(--destructive))" name="Fraud Detected" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
+                <CardContent>
+                    <VerificationTrendChart data={verificationTrendData} />
                 </CardContent>
             </Card>
 
