@@ -20,86 +20,87 @@ export default function UniversityDashboard({ user }: { user: any }) {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
+                <Card className="bg-glass">
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-blue-900">Bulk Certificate Upload</CardTitle>
-                            <UploadCloud className="h-8 w-8 text-blue-500" />
+                            <CardTitle>Bulk Certificate Upload</CardTitle>
+                            <UploadCloud className="h-8 w-8 text-primary" />
                         </div>
-                        <CardDescription className="text-blue-700">Upload multiple certificates at once.</CardDescription>
+                        <CardDescription>Upload multiple certificates at once.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
                             <Link href="/app/upload">Upload Now</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
+                <Card className="bg-glass">
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-blue-900">Student Database</CardTitle>
-                            <Database className="h-8 w-8 text-blue-500" />
+                            <CardTitle>Student Database</CardTitle>
+                            <Database className="h-8 w-8 text-primary" />
                         </div>
-                        <CardDescription className="text-blue-700">Manage student records and credentials.</CardDescription>
+                        <CardDescription>Manage student records and credentials.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
                             <Link href="#">Manage Students</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
+                <Card className="bg-glass">
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-blue-900">Certificate Issuance</CardTitle>
-                            <FileText className="h-8 w-8 text-blue-500" />
+                            <CardTitle>Certificate Issuance</CardTitle>
+                            <FileText className="h-8 w-8 text-primary" />
                         </div>
-                        <CardDescription className="text-blue-700">Issue new digital certificates securely.</CardDescription>
+                        <CardDescription>Issue new digital certificates securely.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
                             <Link href="#">Issue Certificate</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
+                <Card className="bg-glass">
                     <CardHeader>
                         <div className="flex items-center justify-between">
-                            <CardTitle className="text-blue-900">Analytics & Reports</CardTitle>
-                            <BarChart2 className="h-8 w-8 text-blue-500" />
+                            <CardTitle>Analytics & Reports</CardTitle>
+                            <BarChart2 className="h-8 w-8 text-primary" />
                         </div>
-                        <CardDescription className="text-blue-700">View issuance trends and statistics.</CardDescription>
+                        <CardDescription>View issuance trends and statistics.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
                             <Link href="#">View Analytics</Link>
                         </Button>
                     </CardContent>
                 </Card>
             </div>
             
-            <Card className="bg-white/80 border-blue-200 shadow-lg backdrop-blur-sm">
+            <Card className="bg-glass">
                 <CardHeader>
-                    <CardTitle className="text-blue-900">Monthly Issuance Analytics</CardTitle>
-                    <CardDescription className="text-blue-700">Certificates issued over the last 6 months.</CardDescription>
+                    <CardTitle>Monthly Issuance Analytics</CardTitle>
+                    <CardDescription>Certificates issued over the last 6 months.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <ResponsiveContainer width="100%" height={300}>
                         <AreaChart data={issuanceData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                             <defs>
                                 <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.8}/>
-                                    <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8}/>
+                                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
                                 </linearGradient>
                             </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.1)" />
-                            <XAxis dataKey="month" stroke="#4b5563" />
-                            <YAxis stroke="#4b5563" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted)/0.2)" />
+                            <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
+                            <YAxis stroke="hsl(var(--muted-foreground))" />
                             <Tooltip contentStyle={{
-                                backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                                border: '1px solid #d1d5db'
+                                backgroundColor: 'hsl(var(--background) / 0.8)',
+                                backdropFilter: 'blur(10px)',
+                                border: '1px solid hsl(var(--border))'
                             }}/>
-                            <Area type="monotone" dataKey="count" stroke="#3b82f6" fillOpacity={1} fill="url(#colorUv)" />
+                            <Area type="monotone" dataKey="count" stroke="hsl(var(--primary))" fillOpacity={1} fill="url(#colorUv)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </CardContent>

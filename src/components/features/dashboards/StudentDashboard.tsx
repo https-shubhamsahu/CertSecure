@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { FileUp, Share2, Award, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const certificates = [
   { id: 1, name: 'Advanced React', issuer: 'Dev University', date: '2023-05-20', image: '/cert-thumb-1.png' },
@@ -14,14 +15,16 @@ const certificates = [
 export default function StudentDashboard({ user }: { user: any }) {
     return (
         <div className="grid gap-6">
-            <Card className="bg-gradient-to-tr from-fuchsia-500 to-cyan-500 text-white shadow-2xl">
+            <Card className="bg-gradient-to-tr from-primary to-purple-600 text-white shadow-2xl">
                 <CardHeader>
                     <CardTitle className="text-3xl">Your Digital Portfolio</CardTitle>
-                    <CardDescription className="text-fuchsia-100">Manage, share, and track your verified certificates.</CardDescription>
+                    <CardDescription className="text-primary-foreground/80">Manage, share, and track your verified certificates.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col sm:flex-row gap-4">
-                    <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
-                        <FileUp className="mr-2 h-4 w-4" /> Upload New Certificate
+                    <Button asChild variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                        <Link href="/app/upload">
+                            <FileUp className="mr-2 h-4 w-4" /> Upload New Certificate
+                        </Link>
                     </Button>
                     <Button variant="outline" className="bg-transparent hover:bg-white/10 text-white border-white/50">
                         <Share2 className="mr-2 h-4 w-4" /> Share My Portfolio
@@ -35,7 +38,7 @@ export default function StudentDashboard({ user }: { user: any }) {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {certificates.map(cert => (
-                        <Card key={cert.id} className="overflow-hidden group transition-all hover:shadow-xl hover:-translate-y-1">
+                        <Card key={cert.id} className="overflow-hidden group transition-all hover:shadow-xl hover:-translate-y-1 bg-glass">
                              <CardContent className="p-0 relative">
                                 <Image 
                                     src={`https://picsum.photos/seed/${cert.id}/600/400`}
@@ -46,7 +49,7 @@ export default function StudentDashboard({ user }: { user: any }) {
                                     data-ai-hint="certificate document"
                                 />
                                 <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors" />
-                                <Badge className="absolute top-2 right-2 gap-1 bg-green-100 text-green-800 border-green-200">
+                                <Badge className="absolute top-2 right-2 gap-1 bg-accent/80 text-accent-foreground border-accent/90">
                                     <ShieldCheck className="h-3 w-3" />
                                     Verified
                                 </Badge>

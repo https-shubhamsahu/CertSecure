@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { CheckCircle, Clock, FileUp, Search, XCircle } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
 
 const recentVerifications = [
   { id: 'CERT-001', student: 'John Doe', status: 'Verified', date: '2023-10-26' },
@@ -18,19 +19,19 @@ export default function EmployerDashboard({ user }: { user: any }) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-primary/10 border-primary/20 backdrop-blur-sm">
+            <Card className="bg-glass">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold text-primary">1,204</CardTitle>
                     <CardDescription>Total Verified</CardDescription>
                 </CardHeader>
             </Card>
-            <Card className="bg-destructive/10 border-destructive/20 backdrop-blur-sm">
+            <Card className="bg-glass">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold text-destructive">17</CardTitle>
                     <CardDescription>Fraudulent Detected</CardDescription>
                 </CardHeader>
             </Card>
-            <Card className="bg-secondary backdrop-blur-sm">
+            <Card className="bg-glass">
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold">98.6%</CardTitle>
                     <CardDescription>Success Rate</CardDescription>
@@ -38,7 +39,7 @@ export default function EmployerDashboard({ user }: { user: any }) {
             </Card>
         </div>
 
-        <Card className="bg-card/80 backdrop-blur-lg border-primary/20 shadow-lg">
+        <Card className="bg-glass">
           <CardHeader>
             <CardTitle>Recent Verifications</CardTitle>
             <CardDescription>History of your recent certificate verifications.</CardDescription>
@@ -78,34 +79,35 @@ export default function EmployerDashboard({ user }: { user: any }) {
         </Card>
       </div>
       <div className="space-y-6">
-        <Card className="bg-card/80 backdrop-blur-lg border-primary/20 shadow-lg text-center">
+        <Card className="bg-glass text-center">
             <CardHeader>
                 <CardTitle>Quick Verification</CardTitle>
                 <CardDescription>Instantly verify a single certificate.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Button size="lg" className="w-full">
-                    <Search className="mr-2 h-5 w-5"/>
-                    Verify a Certificate
+                <Button size="lg" asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+                    <Link href="/app/verify">
+                        <Search className="mr-2 h-5 w-5"/>
+                        Verify a Certificate
+                    </Link>
                 </Button>
             </CardContent>
         </Card>
-        <Card className="bg-card/80 backdrop-blur-lg border-primary/20 shadow-lg">
+        <Card className="bg-glass">
             <CardHeader>
                 <CardTitle>Upload Certificate</CardTitle>
-                <CardDescription>Drag and drop a file or click to select.</CardDescription>
+                <CardDescription>Not hiring? Upload your own certificate.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex items-center justify-center w-full">
+                <Link href="/app/upload" className="flex items-center justify-center w-full">
                     <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/80 transition-colors">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             <FileUp className="w-10 h-10 mb-3 text-muted-foreground" />
-                            <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                            <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span></p>
                             <p className="text-xs text-muted-foreground">PDF, PNG, JPG (MAX. 10MB)</p>
                         </div>
-                        <input id="dropzone-file" type="file" className="hidden" />
                     </label>
-                </div> 
+                </Link> 
             </CardContent>
         </Card>
       </div>

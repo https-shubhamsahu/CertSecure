@@ -3,16 +3,12 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { Inter, Literata } from 'next/font/google';
+import { Poppins } from 'next/font/google';
 
-const inter = Inter({
+const poppins = Poppins({
   subsets: ['latin'],
-  variable: '--font-inter',
-});
-
-const literata = Literata({
-  subsets: ['latin'],
-  variable: '--font-literata',
+  variable: '--font-sans',
+  weight: ['400', '500', '600', '700', '800', '900']
 });
 
 export const metadata: Metadata = {
@@ -29,8 +25,7 @@ export default function RootLayout({
     <html lang="en" className="h-full">
       <body className={cn(
         "h-full antialiased",
-        inter.variable,
-        literata.variable,
+        poppins.variable,
         "font-sans"
       )}>
         <FirebaseClientProvider>

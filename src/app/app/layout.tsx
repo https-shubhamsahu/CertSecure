@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { Sidebar, SidebarProvider, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, Home, Upload, ShieldCheck } from 'lucide-react';
+import { LogOut, Home, Upload, ShieldCheck, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/firebase';
 
@@ -50,12 +50,14 @@ export default function AppLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-background">
+      <div className="flex min-h-screen bg-background/95">
         <Sidebar>
           <SidebarHeader>
             <div className="flex items-center gap-3 p-1">
-              <ShieldCheck className="h-8 w-8 text-primary" />
-              <span className="text-xl font-bold font-literata">CertSecure</span>
+              <div className="p-2 bg-primary/10 rounded-lg">
+                <ShieldCheck className="h-6 w-6 text-primary" />
+              </div>
+              <span className="text-xl font-bold">CertSecure</span>
             </div>
           </SidebarHeader>
           <SidebarContent>
@@ -81,7 +83,7 @@ export default function AppLayout({
             </SidebarMenu>
           </SidebarContent>
           <SidebarFooter>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 p-2 rounded-lg bg-background">
               <Avatar className="h-9 w-9 border-2 border-primary/50">
                 <AvatarImage src={user.photoURL ?? undefined} />
                 <AvatarFallback>{getInitials(user.displayName || user.email)}</AvatarFallback>

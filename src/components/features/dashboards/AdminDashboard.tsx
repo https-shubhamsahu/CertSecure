@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, ShieldAlert, Building2, Settings, BarChart as BarChartIcon } from 'lucide-react';
-import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
   { name: 'Jan', verifications: 4000, fraud: 24 },
@@ -20,7 +20,7 @@ export default function AdminDashboard({ user }: { user: any }) {
     return (
         <div className="grid gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card>
+                <Card className="bg-glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                         <Users className="h-4 w-4 text-muted-foreground" />
@@ -30,7 +30,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                         <p className="text-xs text-muted-foreground">+5.2% from last month</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Fraud Alerts</CardTitle>
                         <ShieldAlert className="h-4 w-4 text-destructive" />
@@ -40,7 +40,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                         <p className="text-xs text-muted-foreground">Action Required</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">Universities</CardTitle>
                         <Building2 className="h-4 w-4 text-muted-foreground" />
@@ -50,7 +50,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                         <p className="text-xs text-muted-foreground">+3 since last week</p>
                     </CardContent>
                 </Card>
-                <Card>
+                <Card className="bg-glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">System Status</CardTitle>
                         <Settings className="h-4 w-4 text-green-500" />
@@ -62,20 +62,21 @@ export default function AdminDashboard({ user }: { user: any }) {
                 </Card>
             </div>
             
-            <Card className="col-span-1 lg:col-span-2">
+            <Card className="col-span-1 lg:col-span-2 bg-glass">
                 <CardHeader>
                     <CardTitle>System Overview</CardTitle>
                     <CardDescription>Real-time verification & fraud statistics</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={350}>
-                        <RechartsBarChart data={data}>
+                        <BarChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted) / 0.2)" />
                             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                             <Tooltip
                               contentStyle={{
                                 backgroundColor: 'hsl(var(--background) / 0.8)',
+                                backdropFilter: 'blur(10px)',
                                 borderColor: 'hsl(var(--border))',
                                 color: 'hsl(var(--foreground))'
                               }}
@@ -83,7 +84,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                             <Legend wrapperStyle={{fontSize: "14px"}}/>
                             <Bar dataKey="verifications" fill="hsl(var(--primary))" name="Verifications" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="fraud" fill="hsl(var(--destructive))" name="Fraud Detected" radius={[4, 4, 0, 0]} />
-                        </RechartsBarChart>
+                        </BarChart>
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
