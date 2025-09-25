@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { BarChart, Users, ShieldAlert, Building2, Settings } from 'lucide-react';
-import { AreaChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { Users, ShieldAlert, Building2, Settings, BarChart as BarChartIcon } from 'lucide-react';
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const data = [
   { name: 'Jan', verifications: 4000, fraud: 24 },
@@ -68,7 +69,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={350}>
-                        <BarChart data={data}>
+                        <RechartsBarChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted) / 0.2)" />
                             <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
                             <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
@@ -82,7 +83,7 @@ export default function AdminDashboard({ user }: { user: any }) {
                             <Legend wrapperStyle={{fontSize: "14px"}}/>
                             <Bar dataKey="verifications" fill="hsl(var(--primary))" name="Verifications" radius={[4, 4, 0, 0]} />
                             <Bar dataKey="fraud" fill="hsl(var(--destructive))" name="Fraud Detected" radius={[4, 4, 0, 0]} />
-                        </BarChart>
+                        </RechartsBarChart>
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
