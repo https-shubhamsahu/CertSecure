@@ -28,7 +28,7 @@ export const INDIA_TOPO_JSON = {
         { "type": "Polygon", "arcs": [[76, 77, 78, 79]], "properties": { "st_nm": "Madhya Pradesh" } },
         { "type": "Polygon", "arcs": [[80, 81, 82, 83]], "properties": { "st_nm": "Maharashtra" } },
         { "type": "Polygon", "arcs": [[84, 85, 86, 87]], "properties": { "st_nm": "Manipur" } },
-        { "type": "Polygon", "arcs": [[88, 89, 90, 91]], "properties": { "stnm": "Meghalaya" } },
+        { "type": "Polygon", "arcs": [[88, 89, 90, 91]], "properties": { "st_nm": "Meghalaya" } },
         { "type": "Polygon", "arcs": [[92, 93, 94, 95]], "properties": { "st_nm": "Mizoram" } },
         { "type": "Polygon", "arcs": [[96, 97, 98, 99]], "properties": { "st_nm": "Nagaland" } },
         { "type": "Polygon", "arcs": [[100, 101, 102, 103]], "properties": { "st_nm": "Odisha" } },
@@ -115,3 +115,6 @@ export const getStateColor = (participation: number): string => {
     if (participation > 20) return "#b3e0c2"; // Orange (using a light green instead of orange)
     return "#e6f5ea"; // Red (using a very light green instead of red)
 };
+
+
+    
