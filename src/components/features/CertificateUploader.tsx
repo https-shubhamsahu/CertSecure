@@ -95,7 +95,7 @@ export default function CertificateUploader() {
 
     // In a real app, you would hash the file and look up the hash.
     // For this demo, we'll use the filename to get a predictable result.
-    const demoResult = DUMMY_CERTIFICATES[file.name] || DUMMY_CERTHIFICATES['default_certificate.pdf'];
+    const demoResult = DUMMY_CERTIFICATES[file.name] || DUMMY_CERTIFICATES['default_certificate.pdf'];
     setResult(demoResult);
 
     switch (demoResult.status) {
