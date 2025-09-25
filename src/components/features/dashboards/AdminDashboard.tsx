@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Check, ChevronDown, Clock, Search, ShieldAlert, Users, X, Map } from 'lucide-react';
 import { adminDashboardStats, universityDistributionData, verificationTrendData } from '@/lib/admin-dashboard-data';
 import StatCards from './admin/StatCards';
-import InteractiveMap from './admin/InteractiveMap';
 import VerificationTrendChart from './admin/charts/VerificationChart';
 import UniversityDistributionChart from './admin/charts/UniversityDistributionChart';
 import RecentActivity from './admin/RecentActivity';
@@ -37,10 +36,10 @@ export default function AdminDashboard({ user }: { user: any }) {
                 <Card className="lg:col-span-2 bg-glass">
                     <CardHeader>
                         <CardTitle>Nationwide Participation</CardTitle>
-                        <CardDescription>University registration status across all states and UTs.</CardDescription>
+                        <CardDescription>Feature under development. Interactive map coming soon.</CardDescription>
                     </CardHeader>
-                    <CardContent>
-                        <InteractiveMap />
+                    <CardContent className="flex items-center justify-center h-[450px] bg-muted/30 rounded-lg">
+                        <p className="text-muted-foreground">Map visualization will be displayed here.</p>
                     </CardContent>
                 </Card>
                 <div className="space-y-6">
