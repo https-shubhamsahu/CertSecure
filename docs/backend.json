@@ -1,0 +1,176 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user in the system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the user.",
+          "format": "email"
+        },
+        "firstName": {
+          "type": "string",
+          "description": "First name of the user."
+        },
+        "lastName": {
+          "type": "string",
+          "description": "Last name of the user."
+        },
+        "role": {
+          "type": "string",
+          "description": "Role of the user (Employer, University, Student, Admin)."
+        }
+      },
+      "required": [
+        "id",
+        "email",
+        "firstName",
+        "lastName",
+        "role"
+      ]
+    },
+    "Certificate": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Certificate",
+      "type": "object",
+      "description": "Represents a certificate uploaded to the system.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the certificate."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to User. (Relationship: User 1:N Certificate)"
+        },
+        "fileName": {
+          "type": "string",
+          "description": "Name of the certificate file."
+        },
+        "uploadDate": {
+          "type": "string",
+          "description": "Date and time when the certificate was uploaded.",
+          "format": "date-time"
+        },
+        "verificationStatus": {
+          "type": "string",
+          "description": "The certificate verification status."
+        },
+        "verificationResult": {
+          "type": "string",
+          "description": "The result of the certificate verification."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "fileName",
+        "uploadDate",
+        "verificationStatus",
+        "verificationResult"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profile information. Each document is keyed by the user's unique ID. No denormalized data is present, as user information is primarily accessed through authentication and not directly tied to other collections for authorization.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/certificates/{certificateId}",
+        "definition": {
+          "entityName": "Certificate",
+          "schema": {
+            "$ref": "#/backend/entities/Certificate"
+          },
+          "description": "Stores certificate information for each user.  Includes denormalized 'userId' for authorization independence. Each certificate is owned by the user specified in the userId.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the user."
+            },
+            {
+              "name": "certificateId",
+              "description": "The unique identifier for the certificate."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_admin/{userId}",
+        "definition": {
+          "entityName": "AdminRole",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Collection to store admin user roles. Existence of a document with the user's ID grants admin privileges. Authorization relies on existence over content.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the admin user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_university/{userId}",
+        "definition": {
+          "entityName": "UniversityRole",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Collection to store university user roles. Existence of a document with the user's ID grants university privileges. Authorization relies on existence over content.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the university user."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/roles_employer/{userId}",
+        "definition": {
+          "entityName": "EmployerRole",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Collection to store employer user roles. Existence of a document with the user's ID grants employer privileges. Authorization relies on existence over content.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier for the employer user."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "This Firestore data structure is designed to support a certificate verification platform with role-based access control. It prioritizes authorization independence by denormalizing user roles directly within the certificate documents, avoiding the need for `get()` calls in security rules. This ensures atomic operations and simplifies debugging. The structure also facilitates secure list operations by segregating data based on access requirements and utilizing a clear ownership model. The user roles are managed through dedicated collections (`roles_admin`, `roles_university`, `roles_employer`) to efficiently manage global roles via existence checks, and certificates are stored under the corresponding user to ensure data privacy and security."
+  }
+}

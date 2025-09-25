@@ -1,0 +1,216 @@
+/**
+ * @fileoverview Firestore Security Rules for Certificate Verification Platform.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a strict user-ownership model for user profiles and certificates.
+ * Access to user data is restricted to the owning user, while certificates are also owned by the corresponding user.
+ * Additionally, the rules support role-based access control for admin, university, and employer roles.
+ *
+ * Data Structure:
+ * - /users/{userId}: Stores user profile information. Access is restricted to the owning user.
+ * - /users/{userId}/certificates/{certificateId}: Stores certificate information for each user. Access is restricted to the owning user.
+ * - /roles_admin/{userId}: Documents in this collection grant admin privileges to the user.
+ * - /roles_university/{userId}: Documents in this collection grant university privileges to the user.
+ * - /roles_employer/{userId}: Documents in this collection grant employer privileges to the user.
+ *
+ * Key Security Decisions:
+ * - User listing is disallowed to prevent unauthorized access to user data.
+ * - Role-based access is implemented using dedicated collections for each role.
+ * - Default security posture for ambiguous relationships is strict owner-only access.
+ *
+ * Denormalization for Authorization:
+ * - The `userId` field is present in the `Certificate` documents, which allows for fast and simple ownership checks without additional reads.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /**
+     * @description Enforces access control for user profiles, allowing only the owner to read and write their own profile.
+     * @path /users/{userId}
+     * @allow (create) - User with ID 'user123' can create their profile.
+     *    - auth.uid: 'user123'
+     *    - request.resource.data.id: 'user123'
+     * @allow (get) - User with ID 'user123' can read their profile.
+     *    - auth.uid: 'user123'
+     * @allow (update) - User with ID 'user123' can update their profile.
+     *    - auth.uid: 'user123'
+     * @allow (delete) - User with ID 'user123' can delete their profile.
+     *    - auth.uid: 'user123'
+     * @deny (create) - User with ID 'user456' cannot create a profile for 'user123'.
+     *    - auth.uid: 'user456'
+     *    - request.resource.data.id: 'user123'
+     * @deny (get) - User with ID 'user456' cannot read the profile of 'user123'.
+     *    - auth.uid: 'user456'
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId} {
+      // Helper function to check if the user is signed in and is the owner of the document.
+      function isSignedIn() {
+        return request.auth != null;
+      }
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Allows a user to create their own profile if the user ID matches the authenticated user's ID.
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.id == userId;
+
+      // Allows a user to get their own profile.
+      allow get: if isSignedIn() && isOwner(userId);
+
+      // Allows a user to update their own profile.
+      allow update: if isExistingOwner(userId) && isOwner(userId) && request.resource.data.id == userId;
+
+      // Allows a user to delete their own profile.
+      allow delete: if isExistingOwner(userId) && isOwner(userId);
+
+      // Disallows listing of users.
+      allow list: if false;
+    }
+
+    /**
+     * @description Enforces access control for certificates, allowing only the owner to read and write their own certificates.
+     * @path /users/{userId}/certificates/{certificateId}
+     * @allow (create) - User with ID 'user123' can create a certificate.
+     *    - auth.uid: 'user123'
+     *    - request.resource.data.userId: 'user123'
+     * @allow (get) - User with ID 'user123' can read their certificate.
+     *    - auth.uid: 'user123'
+     * @allow (update) - User with ID 'user123' can update their certificate.
+     *    - auth.uid: 'user123'
+     * @allow (delete) - User with ID 'user123' can delete their certificate.
+     *    - auth.uid: 'user123'
+     * @deny (create) - User with ID 'user456' cannot create a certificate for 'user123'.
+     *    - auth.uid: 'user456'
+     *    - request.resource.data.userId: 'user123'
+     * @deny (get) - User with ID 'user456' cannot read the certificate of 'user123'.
+     *    - auth.uid: 'user456'
+     * @principle Enforces document ownership for writes.
+     */
+    match /users/{userId}/certificates/{certificateId} {
+      function isSignedIn() {
+        return request.auth != null;
+      }
+
+      function isOwner(userId) {
+        return request.auth.uid == userId;
+      }
+
+      function isExistingOwner(userId) {
+        return isOwner(userId) && resource != null;
+      }
+
+      // Allows a user to create a certificate if the user ID matches the authenticated user's ID.
+      allow create: if isSignedIn() && isOwner(userId) && request.resource.data.userId == userId;
+
+      // Allows a user to get their own certificate.
+      allow get: if isSignedIn() && isOwner(userId);
+
+      // Allows a user to update their own certificate.
+      allow update: if isExistingOwner(userId) && isOwner(userId) && request.resource.data.userId == userId;
+
+      // Allows a user to delete their own certificate.
+      allow delete: if isExistingOwner(userId) && isOwner(userId);
+
+      // Allows the owner to list their own certificates.
+      allow list: if isSignedIn() && isOwner(userId);
+    }
+
+     /**
+      * @description Allows only admin users to create, read, update, and delete documents in the roles_admin collection.
+      * @path /roles_admin/{userId}
+      * @allow (create) - Admin user with ID 'admin123' can create a document.
+      *    - auth.uid: 'admin123'
+      *    - exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) == true
+      * @allow (get) - Admin user with ID 'admin123' can read a document.
+      *    - auth.uid: 'admin123'
+      *    - exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) == true
+      * @allow (update) - Admin user with ID 'admin123' can update a document.
+      *    - auth.uid: 'admin123'
+      *    - exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) == true
+      * @allow (delete) - Admin user with ID 'admin123' can delete a document.
+      *    - auth.uid: 'admin123'
+      *    - exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) == true
+      * @deny (create) - Non-admin user with ID 'user123' cannot create a document.
+      *    - auth.uid: 'user123'
+      *    - exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid)) == false
+      * @principle Implements role-based access control for admin users.
+      */
+     match /roles_admin/{userId} {
+        function isAdmin() {
+            return exists(/databases/$(database)/documents/roles_admin/$(request.auth.uid));
+        }
+        allow create: if isAdmin();
+        allow get: if isAdmin();
+        allow update: if isAdmin();
+        allow delete: if isAdmin();
+        allow list: if isAdmin();
+    }
+
+     /**
+      * @description Allows only university users to create, read, update, and delete documents in the roles_university collection.
+      * @path /roles_university/{userId}
+      * @allow (create) - University user with ID 'uni123' can create a document.
+      *    - auth.uid: 'uni123'
+      *    - exists(/databases/$(database)/documents/roles_university/$(request.auth.uid)) == true
+      * @allow (get) - University user with ID 'uni123' can read a document.
+      *    - auth.uid: 'uni123'
+      *    - exists(/databases/$(database)/documents/roles_university/$(request.auth.uid)) == true
+      * @allow (update) - University user with ID 'uni123' can update a document.
+      *    - auth.uid: 'uni123'
+      *    - exists(/databases/$(database)/documents/roles_university/$(request.auth.uid)) == true
+      * @allow (delete) - University user with ID 'uni123' can delete a document.
+      *    - auth.uid: 'uni123'
+      *    - exists(/databases/$(database)/documents/roles_university/$(request.auth.uid)) == true
+      * @deny (create) - Non-university user with ID 'user123' cannot create a document.
+      *    - auth.uid: 'user123'
+      *    - exists(/databases/$(database)/documents/roles_university/$(request.auth.uid)) == false
+      * @principle Implements role-based access control for university users.
+      */
+     match /roles_university/{userId} {
+        function isUniversity() {
+            return exists(/databases/$(database)/documents/roles_university/$(request.auth.uid));
+        }
+        allow create: if isUniversity();
+        allow get: if isUniversity();
+        allow update: if isUniversity();
+        allow delete: if isUniversity();
+        allow list: if isUniversity();
+    }
+
+    /**
+     * @description Allows only employer users to create, read, update, and delete documents in the roles_employer collection.
+     * @path /roles_employer/{userId}
+     * @allow (create) - Employer user with ID 'emp123' can create a document.
+     *    - auth.uid: 'emp123'
+     *    - exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid)) == true
+     * @allow (get) - Employer user with ID 'emp123' can read a document.
+     *    - auth.uid: 'emp123'
+     *    - exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid)) == true
+     * @allow (update) - Employer user with ID 'emp123' can update a document.
+     *    - auth.uid: 'emp123'
+     *    - exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid)) == true
+     * @allow (delete) - Employer user with ID 'emp123' can delete a document.
+     *    - auth.uid: 'emp123'
+     *    - exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid)) == true
+     * @deny (create) - Non-employer user with ID 'user123' cannot create a document.
+     *    - auth.uid: 'user123'
+     *    - exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid)) == false
+     * @principle Implements role-based access control for employer users.
+     */
+     match /roles_employer/{userId} {
+        function isEmployer() {
+            return exists(/databases/$(database)/documents/roles_employer/$(request.auth.uid));
+        }
+        allow create: if isEmployer();
+        allow get: if isEmployer();
+        allow update: if isEmployer();
+        allow delete: if isEmployer();
+        allow list: if isEmployer();
+    }
+  }
+}
