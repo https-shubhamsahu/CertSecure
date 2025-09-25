@@ -9,14 +9,25 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ShieldCheck, UserPlus } from 'lucide-react';
+import { UserPlus } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase';
 import { setDocumentNonBlocking } from '@/firebase/non-blocking-updates';
+import { Auth, createUserWithEmailAndPassword } from 'firebase/auth';
 
 type UserRole = "Student" | "Employer" | "University" | "Admin";
+
+async function handleUserCreation(auth: Auth, email: string, password: string) {
+    try {
+        return await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+        console.error("Error creating user:", error);
+        throw error;
+    }
+}
+
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
@@ -45,7 +56,7 @@ export default function RegisterPage() {
     setIsLoading(true);
 
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const userCredential = await handleUserCreation(auth, email, password);
       const newUser = userCredential.user;
 
       if (newUser) {
@@ -64,11 +75,8 @@ export default function RegisterPage() {
         const roleDocRef = doc(firestore, roleCollectionPath, newUser.uid);
         setDocumentNonBlocking(roleDocRef, { role: true }, { merge: true });
 
-        toast({
-          title: "Registration Successful",
-          description: "Redirecting to your dashboard...",
-        });
-        // Listener will redirect
+        // Non-blocking sign-in after successful registration and data setup
+        initiateEmailSignUp(auth, email, password);
       }
     } catch (error: any) {
       console.error("Registration failed:", error);
