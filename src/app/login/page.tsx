@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@/firebase';
 import { initiateEmailSignIn } from '@/firebase/non-blocking-login';
@@ -21,6 +21,12 @@ export default function LoginPage() {
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
 
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push('/app');
+    }
+  }, [isUserLoading, user, router]);
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -39,7 +45,7 @@ export default function LoginPage() {
     }
   };
   
-  if (isUserLoading) {
+  if (isUserLoading || user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background font-sans">
         <div className="text-center">
@@ -47,12 +53,6 @@ export default function LoginPage() {
         </div>
       </div>
     );
-  }
-
-
-  if (user) {
-    router.push('/app');
-    return null;
   }
 
   return (

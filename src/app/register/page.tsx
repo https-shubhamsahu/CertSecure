@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth, useUser } from '@/firebase';
 import { initiateEmailSignUp } from '@/firebase/non-blocking-login';
@@ -42,6 +42,12 @@ export default function RegisterPage() {
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!isUserLoading && user) {
+      router.push('/app');
+    }
+  }, [isUserLoading, user, router]);
 
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,17 +95,12 @@ export default function RegisterPage() {
     }
   };
   
-  if (isUserLoading) {
+  if (isUserLoading || user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background font-sans">
         <p>Loading...</p>
       </div>
     );
-  }
-
-  if (user) {
-    router.push('/app');
-    return null;
   }
 
   return (
