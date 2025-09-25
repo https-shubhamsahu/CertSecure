@@ -1,8 +1,9 @@
+
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck } from 'lucide-react';
+import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -12,8 +13,10 @@ import Image from 'next/image';
 import QRCode from 'qrcode.react';
 import { jsPDF } from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
+import { DUMMY_CERTIFICATES, CertificateData, VerificationStatus } from '@/lib/dummy-data';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 
-type Status = 'idle' | 'uploading' | 'processing' | 'success' | 'error';
+type Status = 'idle' | 'uploading' | 'processing' | 'success' | 'error' | 'suspicious';
 type ProcessingStep = 'ocr' | 'ai' | 'hash' | 'done';
 
 const ProcessingStepDetails = {
@@ -27,12 +30,9 @@ export default function CertificateUploader() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('idle');
-  const [error, setError] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [processingStep, setProcessingStep] = useState<ProcessingStep | null>(null);
-  const [extractedText, setExtractedText] = useState('');
-  const [shaHash, setShaHash] = useState('');
-  const [verificationId, setVerificationId] = useState('');
+  const [result, setResult] = useState<CertificateData | null>(null);
   const { toast } = useToast();
 
   const onDrop = useCallback((acceptedFiles: File[], fileRejections: any[]) => {
@@ -47,15 +47,13 @@ export default function CertificateUploader() {
     
     const acceptedFile = acceptedFiles[0];
     if (acceptedFile) {
+      reset();
       setFile(acceptedFile);
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
       };
       reader.readAsDataURL(acceptedFile);
-      setStatus('idle');
-      setError(null);
-      setProgress(0);
     }
   }, [toast]);
 
@@ -71,41 +69,45 @@ export default function CertificateUploader() {
   });
 
   const handleProcess = async () => {
+    if (!file) return;
+
     setStatus('uploading');
     setProgress(10);
     await new Promise(res => setTimeout(res, 500));
     
     setStatus('processing');
     
-    // Simulate OCR
     setProcessingStep('ocr');
     setProgress(ProcessingStepDetails.ocr.progress);
-    await new Promise(res => setTimeout(res, 1500));
-    setExtractedText("CertSecure Demo Certificate\nIssued to: Alex Doe\nIssued by: Dev University\nDate: 2023-10-27\nValid until: 2025-10-27");
+    await new Promise(res => setTimeout(res, 1000 + Math.random() * 500));
     
-    // Simulate AI Analysis
     setProcessingStep('ai');
     setProgress(ProcessingStepDetails.ai.progress);
-    await new Promise(res => setTimeout(res, 2000));
+    await new Promise(res => setTimeout(res, 1500 + Math.random() * 1000));
     
-    // Simulate Hash
     setProcessingStep('hash');
     setProgress(ProcessingStepDetails.hash.progress);
-    await new Promise(res => setTimeout(res, 1000));
-    setShaHash('0'.repeat(128)); // Dummy hash
+    await new Promise(res => setTimeout(res, 1000 + Math.random() * 500));
     
-    // Finalize
     setProcessingStep('done');
     setProgress(ProcessingStepDetails.done.progress);
     await new Promise(res => setTimeout(res, 500));
 
-    const isSuccess = Math.random() > 0.2; // 80% success rate
-    if (isSuccess) {
-      setStatus('success');
-      setVerificationId(`CS-VER-${Date.now()}`);
-    } else {
-      setStatus('error');
-      setError('AI detected potential signs of tampering.');
+    // In a real app, you would hash the file and look up the hash.
+    // For this demo, we'll use the filename to get a predictable result.
+    const demoResult = DUMMY_CERTIFICATES[file.name] || DUMMY_CERTHIFICATES['default_certificate.pdf'];
+    setResult(demoResult);
+
+    switch (demoResult.status) {
+        case 'VERIFIED':
+            setStatus('success');
+            break;
+        case 'FRAUDULENT':
+            setStatus('error');
+            break;
+        case 'SUSPICIOUS':
+            setStatus('suspicious');
+            break;
     }
   };
 
@@ -115,39 +117,134 @@ export default function CertificateUploader() {
     setStatus('idle');
     setProgress(0);
     setProcessingStep(null);
-    setExtractedText('');
-    setShaHash('');
-    setError(null);
-    setVerificationId('');
+    setResult(null);
   };
 
   const downloadReport = () => {
+    if (!result) return;
     const doc = new jsPDF();
     doc.setFontSize(18);
     doc.text("CertSecure Verification Report", 14, 22);
     doc.setFontSize(11);
-    doc.text(`Verification ID: ${verificationId}`, 14, 32);
+    doc.text(`Verification ID: ${result.id}`, 14, 32);
     doc.text(`Timestamp: ${new Date().toLocaleString()}`, 14, 38);
     
     doc.setFontSize(14);
-    doc.text("Result: VERIFIED", 14, 50, { textColor: '#16a34a' });
+    let statusColor = '#16a34a'; // Green for Verified
+    if (result.status === 'FRAUDULENT') statusColor = '#dc2626'; // Red for Fraudulent
+    if (result.status === 'SUSPICIOUS') statusColor = '#f59e0b'; // Amber for Suspicious
+    doc.text(`Result: ${result.status}`, 14, 50, { textColor: statusColor });
     
     doc.setFontSize(12);
     doc.text("Certificate Details", 14, 62);
     doc.setFontSize(10);
-    doc.text(extractedText, 16, 70);
+    doc.text(result.extractedText, 16, 70, { maxWidth: 180 });
     
     doc.setFontSize(12);
-    doc.text("Digital Fingerprint (SHA-512)", 14, 110);
+    doc.text("Digital Fingerprint (SHA-512)", 14, 120);
     doc.setFontSize(8);
-    doc.text(shaHash, 16, 118, { maxWidth: 180 });
+    doc.text(result.sha512Hash, 16, 128, { maxWidth: 180 });
+
+    if (result.fraudIndicators && result.fraudIndicators.length > 0) {
+        doc.setFontSize(12);
+        doc.text("Fraud/Suspicion Indicators", 14, 150);
+        doc.setFontSize(10);
+        doc.text(result.fraudIndicators.join('\n'), 16, 158, { maxWidth: 180 });
+    }
 
     if (preview) {
-        doc.addImage(preview, 'JPEG', 14, 130, 80, 60);
+        doc.addImage(preview, 'JPEG', 14, doc.getNumberOfPages() > 1 ? 20 : 180, 80, 60);
     }
     
-    doc.save(`CertSecure-Report-${verificationId}.pdf`);
+    doc.save(`CertSecure-Report-${result.id}.pdf`);
   };
+
+  const ResultCard = ({ resultData }: { resultData: CertificateData }) => {
+    const statusMap = {
+        VERIFIED: {
+            styles: 'bg-green-50/50 dark:bg-green-900/10 border-green-500/30',
+            icon: <CheckCircle className="w-12 h-12 text-green-500" />,
+            title: 'Verification Successful',
+            titleClass: 'text-green-700 dark:text-green-400',
+            description: 'This certificate has been verified as authentic.',
+            descriptionClass: 'text-green-600 dark:text-green-500',
+        },
+        FRAUDULENT: {
+            styles: 'bg-red-50/50 dark:bg-red-900/10 border-red-500/30',
+            icon: <XCircle className="w-12 h-12 text-red-500" />,
+            title: 'Verification Failed',
+            titleClass: 'text-red-700 dark:text-red-400',
+            description: 'This certificate shows strong indicators of fraud.',
+            descriptionClass: 'text-red-600 dark:text-red-500',
+        },
+        SUSPICIOUS: {
+            styles: 'bg-amber-50/50 dark:bg-amber-900/10 border-amber-500/30',
+            icon: <AlertTriangle className="w-12 h-12 text-amber-500" />,
+            title: 'Verification Suspicious',
+            titleClass: 'text-amber-700 dark:text-amber-400',
+            description: 'Potential inconsistencies detected. Manual review recommended.',
+            descriptionClass: 'text-amber-600 dark:text-amber-500',
+        }
+    };
+    
+    const currentStatus = statusMap[resultData.status];
+
+    return (
+        <Card className={`animate-fade-in ${currentStatus.styles}`}>
+            <CardHeader className="flex-row items-center gap-4 space-y-0">
+                {currentStatus.icon}
+                <div>
+                    <CardTitle className={currentStatus.titleClass}>{currentStatus.title}</CardTitle>
+                    <CardDescription className={currentStatus.descriptionClass}>
+                        {currentStatus.description}
+                    </CardDescription>
+                </div>
+            </CardHeader>
+            <CardContent>
+                {resultData.fraudIndicators.length > 0 && (
+                     <Alert variant="destructive" className="mb-4 bg-transparent">
+                        <AlertTitle>Analysis Report</AlertTitle>
+                        <AlertDescription>
+                            <ul className="list-disc pl-5 mt-2">
+                                {resultData.fraudIndicators.map((reason, i) => <li key={i}>{reason}</li>)}
+                            </ul>
+                        </AlertDescription>
+                    </Alert>
+                )}
+
+                <Tabs defaultValue="overview" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="details">Technical Details</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="overview" className="mt-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 className="font-semibold mb-2">Extracted Information</h4>
+                                <pre className="text-sm p-4 bg-muted/50 rounded-md whitespace-pre-wrap font-sans">{resultData.extractedText}</pre>
+                            </div>
+                            <div className="flex flex-col items-center justify-center gap-4 p-4 bg-muted/50 rounded-md">
+                                <h4 className="font-semibold">Verification QR Code</h4>
+                                <div className="p-2 bg-white rounded-md">
+                                    <QRCode value={resultData.id} size={128} />
+                                </div>
+                                <p className="text-xs text-center text-muted-foreground">Scan to get on-chain verification details.</p>
+                            </div>
+                        </div>
+                    </TabsContent>
+                    <TabsContent value="details" className="mt-4">
+                        <h4 className="font-semibold mb-2">Digital Fingerprint (SHA-512)</h4>
+                        <p className="text-xs font-mono break-all p-4 bg-muted/50 rounded-md">{resultData.sha512Hash}</p>
+                    </TabsContent>
+                </Tabs>
+                <div className="mt-6 flex flex-wrap gap-2">
+                    <Button onClick={downloadReport}><Download className="mr-2 h-4 w-4" /> Download Report</Button>
+                    <Button onClick={reset} variant="outline">Verify Another</Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+  }
 
   const renderContent = () => {
     switch (status) {
@@ -181,6 +278,19 @@ export default function CertificateUploader() {
                 </div>
               </div>
             )}
+            {!file && (
+                <Card className="mt-4">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Demo Scenarios</CardTitle>
+                        <CardDescription>To test different verification results, rename a file to one of the following and upload it:</CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-sm text-muted-foreground space-y-1">
+                        <p>1. <span className="font-mono text-foreground">authentic_certificate.pdf</span> (Results in: VERIFIED ✅)</p>
+                        <p>2. <span className="font-mono text-foreground">fraudulent_certificate.jpg</span> (Results in: FRAUDULENT ❌)</p>
+                        <p>3. <span className="font-mono text-foreground">suspicious_certificate.png</span> (Results in: SUSPICIOUS ⚠️)</p>
+                    </CardContent>
+                </Card>
+            )}
           </>
         );
       case 'uploading':
@@ -201,52 +311,11 @@ export default function CertificateUploader() {
         );
       case 'success':
       case 'error':
-        return (
-            <Card className={`animate-fade-in ${status === 'success' ? 'bg-green-50/50 dark:bg-green-900/10 border-green-500/30' : 'bg-red-50/50 dark:bg-red-900/10 border-red-500/30'}`}>
-                <CardHeader className="flex-row items-center gap-4 space-y-0">
-                    {status === 'success' ? <CheckCircle className="w-12 h-12 text-green-500" /> : <XCircle className="w-12 h-12 text-red-500" />}
-                    <div>
-                        <CardTitle className={status === 'success' ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}>
-                            {status === 'success' ? 'Verification Successful' : 'Verification Failed'}
-                        </CardTitle>
-                        <CardDescription className={status === 'success' ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'}>
-                            {status === 'success' ? 'This certificate has been verified.' : error}
-                        </CardDescription>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <Tabs defaultValue="overview" className="w-full">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="details">Technical Details</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="overview" className="mt-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <h4 className="font-semibold mb-2">Extracted Information</h4>
-                                    <pre className="text-sm p-4 bg-muted/50 rounded-md whitespace-pre-wrap font-sans">{extractedText}</pre>
-                                </div>
-                                <div className="flex flex-col items-center justify-center gap-4 p-4 bg-muted/50 rounded-md">
-                                    <h4 className="font-semibold">Verification QR Code</h4>
-                                    <div className="p-2 bg-white rounded-md">
-                                      <QRCode value={verificationId || "error"} size={128} />
-                                    </div>
-                                    <p className="text-xs text-center text-muted-foreground">Scan to verify this result on-chain (demo).</p>
-                                </div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="details" className="mt-4">
-                            <h4 className="font-semibold mb-2">Digital Fingerprint (SHA-512)</h4>
-                            <p className="text-xs font-mono break-all p-4 bg-muted/50 rounded-md">{shaHash}</p>
-                        </TabsContent>
-                    </Tabs>
-                    <div className="mt-6 flex flex-wrap gap-2">
-                        {status === 'success' && <Button onClick={downloadReport}><Download className="mr-2 h-4 w-4" /> Download Report</Button>}
-                        <Button onClick={reset} variant="outline">Verify Another</Button>
-                    </div>
-                </CardContent>
-            </Card>
-        )
+      case 'suspicious':
+          if (!result) return null;
+          return <ResultCard resultData={result} />;
+      default:
+        return null;
     }
   };
 
