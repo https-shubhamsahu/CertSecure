@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,7 +62,7 @@ export default function EmployerDashboard({ user }: { user: any }) {
                     <TableCell>{item.student}</TableCell>
                     <TableCell>
                       <Badge variant={
-                        item.status === 'Verified' ? 'default' :
+                        item.status === 'Verified' ? 'success' :
                         item.status === 'Pending' ? 'secondary' : 'destructive'
                       } className="gap-1">
                         {item.status === 'Verified' && <CheckCircle className="h-3 w-3" />}

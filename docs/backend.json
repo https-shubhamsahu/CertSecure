@@ -1,7 +1,7 @@
+
 {
   "entities": {
     "User": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "User",
       "type": "object",
       "description": "Represents a user in the system.",
@@ -37,7 +37,6 @@
       ]
     },
     "Certificate": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Certificate",
       "type": "object",
       "description": "Represents a certificate uploaded to the system.",
@@ -85,92 +84,27 @@
     ]
   },
   "firestore": {
-    "structure": [
-      {
-        "path": "/users/{userId}",
-        "definition": {
-          "entityName": "User",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Stores user profile information. Each document is keyed by the user's unique ID. No denormalized data is present, as user information is primarily accessed through authentication and not directly tied to other collections for authorization.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            }
-          ]
-        }
+    "structure": {
+      "/users/{userId}": {
+        "schema": { "$ref": "#/entities/User" },
+        "description": "Stores user profile information. Each document is keyed by the user's unique ID."
       },
-      {
-        "path": "/users/{userId}/certificates/{certificateId}",
-        "definition": {
-          "entityName": "Certificate",
-          "schema": {
-            "$ref": "#/backend/entities/Certificate"
-          },
-          "description": "Stores certificate information for each user.  Includes denormalized 'userId' for authorization independence. Each certificate is owned by the user specified in the userId.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the user."
-            },
-            {
-              "name": "certificateId",
-              "description": "The unique identifier for the certificate."
-            }
-          ]
-        }
+      "/users/{userId}/certificates/{certificateId}": {
+        "schema": { "$ref": "#/entities/Certificate" },
+        "description": "Stores certificate information for each user."
       },
-      {
-        "path": "/roles_admin/{userId}",
-        "definition": {
-          "entityName": "AdminRole",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Collection to store admin user roles. Existence of a document with the user's ID grants admin privileges. Authorization relies on existence over content.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the admin user."
-            }
-          ]
-        }
+      "/roles_admin/{userId}": {
+        "schema": { "$ref": "#/entities/User" },
+        "description": "Collection to store admin user roles. Existence of a document with the user's ID grants admin privileges."
       },
-      {
-        "path": "/roles_university/{userId}",
-        "definition": {
-          "entityName": "UniversityRole",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Collection to store university user roles. Existence of a document with the user's ID grants university privileges. Authorization relies on existence over content.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the university user."
-            }
-          ]
-        }
+      "/roles_university/{userId}": {
+        "schema": { "$ref": "#/entities/User" },
+        "description": "Collection to store university user roles. Existence of a document with the user's ID grants university privileges."
       },
-      {
-        "path": "/roles_employer/{userId}",
-        "definition": {
-          "entityName": "EmployerRole",
-          "schema": {
-            "$ref": "#/backend/entities/User"
-          },
-          "description": "Collection to store employer user roles. Existence of a document with the user's ID grants employer privileges. Authorization relies on existence over content.",
-          "params": [
-            {
-              "name": "userId",
-              "description": "The unique identifier for the employer user."
-            }
-          ]
-        }
+      "/roles_employer/{userId}": {
+        "schema": { "$ref": "#/entities/User" },
+        "description": "Collection to store employer user roles. Existence of a document with the user's ID grants employer privileges."
       }
-    ],
-    "reasoning": "This Firestore data structure is designed to support a certificate verification platform with role-based access control. It prioritizes authorization independence by denormalizing user roles directly within the certificate documents, avoiding the need for `get()` calls in security rules. This ensures atomic operations and simplifies debugging. The structure also facilitates secure list operations by segregating data based on access requirements and utilizing a clear ownership model. The user roles are managed through dedicated collections (`roles_admin`, `roles_university`, `roles_employer`) to efficiently manage global roles via existence checks, and certificates are stored under the corresponding user to ensure data privacy and security."
+    }
   }
 }

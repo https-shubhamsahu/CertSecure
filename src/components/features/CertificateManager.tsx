@@ -84,21 +84,21 @@ export default function CertificateManager() {
     switch (status) {
       case "success":
         return (
-          <Card className="bg-green-50/50 dark:bg-green-900/10 border-green-500/30 animate-fade-in">
+          <Card className="bg-green-50/50 dark:bg-green-900/10 border-emerald-500/30 animate-fade-in">
             <CardHeader>
               <div className="flex items-center gap-3">
-                <ShieldCheck className="w-8 h-8 text-green-600 dark:text-green-500" />
+                <ShieldCheck className="w-8 h-8 text-emerald-600 dark:text-emerald-500" />
                 <div>
-                  <CardTitle className="text-green-800 dark:text-green-300">
+                  <CardTitle className="text-emerald-800 dark:text-emerald-300">
                     Certificate Verified
                   </CardTitle>
-                  <CardDescription className="text-green-600 dark:text-green-400">
+                  <CardDescription className="text-emerald-600 dark:text-emerald-400">
                     The certificate is valid and trusted.
                   </CardDescription>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="text-sm space-y-3 text-green-700 dark:text-green-300">
+            <CardContent className="text-sm space-y-3 text-emerald-700 dark:text-emerald-300">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4"/> <strong>Subject:</strong> {verificationResult?.subject}
               </div>
@@ -153,7 +153,7 @@ export default function CertificateManager() {
         <div className="p-6 border-2 border-dashed rounded-lg bg-muted/30">
             <div className="flex flex-col sm:flex-row gap-4">
             <Input type="file" onChange={handleFileChange} className="flex-grow bg-background/70" />
-            <Button onClick={handleVerify} disabled={!file || status === "uploading" || status === "verifying"} className="w-full sm:w-auto">
+            <Button onClick={handleVerify} disabled={!file || status === "uploading" || status === "verifying"} className="w-full sm:w-auto bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
                 <ShieldCheck className="mr-2 h-4 w-4" />
                 {status === "uploading" || status === "verifying"
                 ? "Verifying..."
@@ -175,5 +175,3 @@ export default function CertificateManager() {
     </Card>
   );
 }
-
-    

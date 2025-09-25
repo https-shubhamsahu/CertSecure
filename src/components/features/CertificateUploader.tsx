@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck, AlertTriangle, Scale, SpellCheck, Stamp, Database, Fingerprint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -13,7 +13,7 @@ import Image from 'next/image';
 import QRCode from 'qrcode.react';
 import { jsPDF } from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
-import { DUMMY_CERTIFICATES, CertificateData, VerificationStatus } from '@/lib/dummy-data';
+import { DUMMY_CERTIFICATES, CertificateData } from '@/lib/dummy-data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { cn } from '@/lib/utils';
 
@@ -96,13 +96,13 @@ export default function CertificateUploader() {
     setStatus('processing');
     setProgress(10);
     
-    await runProcessingStep('ocr', 3000 + Math.random() * 1000);
-    await runProcessingStep('structure', 3000 + Math.random() * 1000);
-    await runProcessingStep('consistency', 2500 + Math.random() * 1000);
-    await runProcessingStep('seal', 4000 + Math.random() * 1500);
-    await runProcessingStep('database', 3500 + Math.random() * 1000);
-    await runProcessingStep('hash', 2000 + Math.random() * 500);
-    await runProcessingStep('done', 1000);
+    await runProcessingStep('ocr', 1500 + Math.random() * 500);
+    await runProcessingStep('structure', 1500 + Math.random() * 500);
+    await runProcessingStep('consistency', 1200 + Math.random() * 500);
+    await runProcessingStep('seal', 2000 + Math.random() * 700);
+    await runProcessingStep('database', 1800 + Math.random() * 500);
+    await runProcessingStep('hash', 1000 + Math.random() * 300);
+    await runProcessingStep('done', 500);
 
     // In a real app, you would hash the file and look up the hash.
     // For this demo, we'll use the filename to get a predictable result.
@@ -142,8 +142,8 @@ export default function CertificateUploader() {
     doc.text(`Timestamp: ${new Date().toLocaleString()}`, 14, 38);
     
     doc.setFontSize(14);
-    let statusColor = '#16a34a'; // Green for Verified
-    if (result.status === 'FRAUDULENT') statusColor = '#dc2626'; // Red for Fraudulent
+    let statusColor = '#10b981'; // Green for Verified
+    if (result.status === 'FRAUDULENT') statusColor = '#ef4444'; // Red for Fraudulent
     if (result.status === 'SUSPICIOUS') statusColor = '#f59e0b'; // Amber for Suspicious
     doc.setTextColor(statusColor);
     doc.text(`Result: ${result.status}`, 14, 50);
@@ -176,12 +176,12 @@ export default function CertificateUploader() {
   const ResultCard = ({ resultData }: { resultData: CertificateData }) => {
     const statusMap = {
         VERIFIED: {
-            styles: 'bg-green-50/50 dark:bg-green-900/10 border-green-500/30',
-            icon: <CheckCircle className="w-12 h-12 text-green-500" />,
+            styles: 'bg-green-50/50 dark:bg-green-900/10 border-emerald-500/30',
+            icon: <CheckCircle className="w-12 h-12 text-emerald-500" />,
             title: 'Verification Successful',
-            titleClass: 'text-green-700 dark:text-green-400',
+            titleClass: 'text-emerald-700 dark:text-emerald-400',
             description: 'This certificate has been verified as authentic.',
-            descriptionClass: 'text-green-600 dark:text-green-500',
+            descriptionClass: 'text-emerald-600 dark:text-emerald-500',
         },
         FRAUDULENT: {
             styles: 'bg-red-50/50 dark:bg-red-900/10 border-red-500/30',
@@ -287,7 +287,7 @@ export default function CertificateUploader() {
                   <div className='flex-1'>
                     <p className="font-medium">{file.name}</p>
                     <p className="text-sm text-muted-foreground">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
-                    <Button onClick={handleProcess} className="mt-4 w-full sm:w-auto">Process Certificate</Button>
+                    <Button onClick={handleProcess} className="mt-4 w-full sm:w-auto bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">Process Certificate</Button>
                   </div>
                 </div>
               </div>
@@ -366,5 +366,3 @@ export default function CertificateUploader() {
     </Card>
   );
 }
-
-    
