@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,9 +8,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const certificates = [
-  { id: 1, name: 'Advanced React', issuer: 'Dev University', date: '2023-05-20', image: '/cert-thumb-1.png' },
-  { id: 2, name: 'Next.js Mastery', issuer: 'Code Academy', date: '2023-08-15', image: '/cert-thumb-2.png' },
-  { id: 3, name: 'Firebase for Web', issuer: 'Google Devs', date: '2023-09-01', image: '/cert-thumb-3.png' },
+  { id: 1, name: 'Advanced React', issuer: 'Dev University', date: '2023-05-20', image: 'https://picsum.photos/seed/1/600/400' },
+  { id: 2, name: 'Next.js Mastery', issuer: 'Code Academy', date: '2023-08-15', image: 'https://picsum.photos/seed/2/600/400' },
+  { id: 3, name: 'Firebase for Web', issuer: 'Google Devs', date: '2023-09-01', image: 'https://picsum.photos/seed/3/600/400' },
 ]
 
 export default function StudentDashboard({ user }: { user: any }) {
@@ -41,7 +42,7 @@ export default function StudentDashboard({ user }: { user: any }) {
                         <Card key={cert.id} className="overflow-hidden group transition-all hover:shadow-xl hover:-translate-y-1 bg-glass">
                              <CardContent className="p-0 relative">
                                 <Image 
-                                    src={`https://picsum.photos/seed/${cert.id}/600/400`}
+                                    src={cert.image}
                                     alt={cert.name}
                                     width={600}
                                     height={400}
