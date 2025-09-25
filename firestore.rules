@@ -1,142 +1,160 @@
 /**
- * @file Firestore Security Rules
- * @description This ruleset enforces a role-based access control model.
+ * @fileoverview Firestore Security Rules for the application.
+ *
+ * Core Philosophy:
+ * This ruleset enforces a role-based access control model with user-specific data ownership.
+ * Each user can only access their own profile data and certificates, and only admins can manage user roles.
  *
  * Data Structure:
- * - /users/{userId}: Stores user profile data, accessible only to the user themselves.
- * - /users/{userId}/certificates/{certificateId}: Stores user-specific certificates, accessible only to the user.
- * - /roles_admin/{userId}: Presence indicates admin role, writable only by admins (not implemented in this prototype).
- * - /roles_university/{userId}: Presence indicates university role, writable only by admins (not implemented in this prototype).
- * - /roles_employer/{userId}: Presence indicates employer role, writable only by admins (not implemented in this prototype).
+ * - `/users/{userId}`: Stores user profile information.
+ * - `/users/{userId}/certificates/{certificateId}`: Stores certificates associated with a specific user.
+ * - `/roles_{role}/{userId}`: Indicates user roles (admin, university, employer).
  *
  * Key Security Decisions:
- * - User data and certificates are strictly owned by the user; no cross-user access is permitted.
- * - Role assignment (admin, university, employer) is not yet secured and is open for prototyping convenience. In a production environment, role assignment should be restricted to privileged users or services.
- * - Data schema validation is disabled for rapid prototyping, but should be added in later iterations to enforce data integrity.
+ * - Users can only read and write their own profile data.
+ * - Users can only manage their own certificates.
+ * - Role collections (`roles_admin`, `roles_university`, `roles_employer`) are write-protected and only
+ *   managed through backend functions.  Clients cannot directly modify these collections.
+ * - Listing of users is generally disallowed except for admin roles (backend functions only).
  *
  * Denormalization for Authorization:
- * - The rules rely on the `request.auth.uid` to match the `userId` in the path for ownership checks, avoiding the need to read the user document itself.
+ * - Role information is denormalized into separate collections (e.g., `/roles_admin/{userId}`) for efficient
+ *   authorization checks without requiring complex queries or joins. The existence of a document in a role collection
+ *   grants that role to the corresponding user.
  */
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    /**
+     * @description Checks if the user is signed in.
+     * @return {bool} True if the user is signed in, false otherwise.
+     */
     function isSignedIn() {
       return request.auth != null;
     }
 
+    /**
+     * @description Checks if the authenticated user's ID matches the provided user ID.
+     * @param {string} userId The user ID to compare against the authenticated user's ID.
+     * @return {bool} True if the user IDs match, false otherwise.
+     */
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
 
     /**
-     * @description Controls access to user profile information.
+     * @description Checks if the authenticated user is an existing owner (signed in, owns the document, and the document exists).
+     * @param {string} userId The user ID to compare against the authenticated user's ID.
+     * @return {bool} True if the user is an existing owner, false otherwise.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && exists(resource);
+    }
+
+    /**
+     * @description Checks if the user has a specific role by verifying that a document exists in the corresponding role collection.
+     * @param {string} role The role to check (e.g., 'admin', 'university', 'employer').
+     * @return {bool} True if the user has the specified role, false otherwise.
+     */
+    function hasRole(role) {
+      return exists(/databases/$(database)/documents/roles_{role}/$(request.auth.uid));
+    }
+    
+    /**
+     * @description Rules for user profile information.
      * @path /users/{userId}
-     * @allow (create) User with ID 'user123' can create their profile.
-     * @deny (create) User with ID 'user456' cannot create a profile for 'user123'.
-     * @allow (get) User with ID 'user123' can read their profile.
-     * @deny (get) User with ID 'user456' cannot read the profile of 'user123'.
-     * @allow (update) User with ID 'user123' can update their profile.
-     * @deny (update) User with ID 'user456' cannot update the profile of 'user123'.
-     * @allow (delete) User with ID 'user123' can delete their profile.
-     * @deny (delete) User with ID 'user456' cannot delete the profile of 'user123'.
-     * @principle Enforces user-ownership for read/write access to user profiles.
+     * @allow (create) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can create their own profile.
+     * @allow (get) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can get their own profile.
+     * @allow (update) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can update their own profile.
+     * @deny (create) User 'otherUser' cannot create a profile for user 'oTe64BSN6KMaDV7GBQhO2U9F1e33'.
+     * @deny (get) User 'otherUser' cannot get user 'oTe64BSN6KMaDV7GBQhO2U9F1e33' profile.
+     * @principle Enforces user-ownership for profile data.
      */
     match /users/{userId} {
       allow get: if isOwner(userId);
-      allow list: if false; // Listing users is not permitted
-
-      allow create: if isOwner(userId) && request.resource.data.id == userId;
-      allow update: if isOwner(userId) && resource.data.id == userId;
-      allow delete: if isOwner(userId) && resource != null;
+      allow list: if false;
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     /**
-     * @description Controls access to user-specific certificates.
+     * @description Rules for certificates associated with a user.
      * @path /users/{userId}/certificates/{certificateId}
-     * @allow (create) User with ID 'user123' can create a certificate.
-     * @deny (create) User with ID 'user456' cannot create a certificate for 'user123'.
-     * @allow (get) User with ID 'user123' can read their certificate.
-     * @deny (get) User with ID 'user456' cannot read the certificate of 'user123'.
-     * @allow (update) User with ID 'user123' can update their certificate.
-     * @deny (update) User with ID 'user456' cannot update the certificate of 'user123'.
-     * @allow (delete) User with ID 'user123' can delete their certificate.
-     * @deny (delete) User with ID 'user456' cannot delete the certificate of 'user123'.
-     * @principle Enforces user-ownership for read/write access to certificates.
+     * @allow (create) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can create a certificate for their profile.
+     * @allow (get) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can get their own certificates.
+     * @allow (update) User 'oTe64BSN6KMaDV7GBQhO2U9F1e33' can update a certificate for their profile.
+     * @deny (create) User 'otherUser' cannot create a certificate for user 'oTe64BSN6KMaDV7GBQhO2U9F1e33'.
+     * @deny (get) User 'otherUser' cannot get user 'oTe64BSN6KMaDV7GBQhO2U9F1e33' certificates.
+     * @principle Enforces user-ownership for certificate data.
      */
     match /users/{userId}/certificates/{certificateId} {
       allow get: if isOwner(userId);
-      allow list: if isOwner(userId);
-
-      allow create: if isOwner(userId) && request.resource.data.userId == userId;
-      allow update: if isOwner(userId) && resource.data.userId == userId && resource != null;
-      allow delete: if isOwner(userId) && resource != null;
+      allow list: if false;
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
     }
 
     /**
-     * @description Controls access to admin role assignments.
+     * @description Rules for admin user roles.  Write access is denied to clients.
      * @path /roles_admin/{userId}
-     * @allow (create) Any signed in user can create their role assignment, but should be restricted to privileged users or services.
-     * @deny (create)  Unsigned user cannot create a role assignment.
-     * @allow (get) Any signed in user can get their role assignment.
-     * @deny (get) Unsigned user cannot get a role assignment.
-     * @allow (update) Any signed in user can update their role assignment, but should be restricted to privileged users or services.
-     * @deny (update) Unsigned user cannot update a role assignment.
-     * @allow (delete) Any signed in user can delete their role assignment, but should be restricted to privileged users or services.
-     * @deny (delete) Unsigned user cannot delete a role assignment.
+     * @deny (create) No client can create an admin role document directly.
+     * @deny (get) No client can read an admin role document directly.
+     * @principle Restricts role management to backend functions.
      */
     match /roles_admin/{userId} {
-      allow get: if isSignedIn();
+      allow get: if false;
       allow list: if false;
-
-      // CRITICAL: In a production environment, role assignment should be restricted to privileged users or services.
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to university role assignments.
+     * @description Rules for university user roles. Write access is denied to clients.
      * @path /roles_university/{userId}
-     * @allow (create) Any signed in user can create their role assignment, but should be restricted to privileged users or services.
-     * @deny (create)  Unsigned user cannot create a role assignment.
-     * @allow (get) Any signed in user can get their role assignment.
-     * @deny (get) Unsigned user cannot get a role assignment.
-     * @allow (update) Any signed in user can update their role assignment, but should be restricted to privileged users or services.
-     * @deny (update) Unsigned user cannot update a role assignment.
-     * @allow (delete) Any signed in user can delete their role assignment, but should be restricted to privileged users or services.
-     * @deny (delete) Unsigned user cannot delete a role assignment.
+     * @deny (create) No client can create an university role document directly.
+     * @deny (get) No client can read an university role document directly.
+     * @principle Restricts role management to backend functions.
      */
     match /roles_university/{userId} {
-      allow get: if isSignedIn();
+      allow get: if false;
       allow list: if false;
-
-      // CRITICAL: In a production environment, role assignment should be restricted to privileged users or services.
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
 
     /**
-     * @description Controls access to employer role assignments.
+     * @description Rules for employer user roles. Write access is denied to clients.
      * @path /roles_employer/{userId}
-     * @allow (create) Any signed in user can create their role assignment, but should be restricted to privileged users or services.
-     * @deny (create)  Unsigned user cannot create a role assignment.
-     * @allow (get) Any signed in user can get their role assignment.
-     * @deny (get) Unsigned user cannot get a role assignment.
-     * @allow (update) Any signed in user can update their role assignment, but should be restricted to privileged users or services.
-     * @deny (update) Unsigned user cannot update a role assignment.
-     * @allow (delete) Any signed in user can delete their role assignment, but should be restricted to privileged users or services.
-     * @deny (delete) Unsigned user cannot delete a role assignment.
+     * @deny (create) No client can create an employer role document directly.
+     * @deny (get) No client can read an employer role document directly.
+     * @principle Restricts role management to backend functions.
      */
     match /roles_employer/{userId} {
-      allow get: if isSignedIn();
+      allow get: if false;
       allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
+    }
 
-      // CRITICAL: In a production environment, role assignment should be restricted to privileged users or services.
-      allow create: if isSignedIn();
-      allow update: if isSignedIn() && resource != null;
-      allow delete: if isSignedIn() && resource != null;
+    /**
+     * @description Rules for student user roles. Write access is denied to clients.
+     * @path /roles_student/{userId}
+     * @deny (create) No client can create a student role document directly.
+     * @deny (get) No client can read an student role document directly.
+     * @principle Restricts role management to backend functions.
+     */
+    match /roles_student/{userId} {
+      allow get: if false;
+      allow list: if false;
+      allow create: if false;
+      allow update: if false;
+      allow delete: if false;
     }
   }
 }
