@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -83,11 +84,19 @@ export default function RegisterPage() {
       }
     } catch (error: any) {
       console.error("Registration failed:", error);
-      toast({
-        variant: "destructive",
-        title: "Registration Failed",
-        description: error.message || "An unexpected error occurred.",
-      });
+      if (error.code === 'auth/email-already-in-use') {
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: "This email is already in use. Please log in instead.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Registration Failed",
+          description: error.message || "An unexpected error occurred.",
+        });
+      }
       setIsLoading(false);
     }
   };
@@ -95,7 +104,10 @@ export default function RegisterPage() {
   if (isUserLoading || user) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background font-sans">
-        <p>Loading...</p>
+        <div className="flex flex-col items-center gap-2">
+          <UserPlus className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-lg font-medium">Loading...</p>
+        </div>
       </div>
     );
   }
@@ -172,3 +184,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+    
