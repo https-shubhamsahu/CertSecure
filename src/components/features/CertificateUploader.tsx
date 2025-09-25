@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode } from 'lucide-react';
+import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
