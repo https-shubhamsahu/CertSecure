@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -16,11 +17,7 @@ const issuanceData = [
 
 export default function UniversityDashboard({ user }: { user: any }) {
     return (
-        <div className="grid gap-8" style={{
-            '--tw-bg-opacity': '0.1',
-            '--bg-color-rgb': '239 246 255',
-            backgroundColor: 'rgba(var(--bg-color-rgb), var(--tw-bg-opacity))'
-        }}>
+        <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
                     <CardHeader>
@@ -101,3 +98,4 @@ export default function UniversityDashboard({ user }: { user: any }) {
         </div>
     );
 }
+
