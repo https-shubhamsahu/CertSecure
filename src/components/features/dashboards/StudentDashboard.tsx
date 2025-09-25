@@ -7,6 +7,7 @@ import { FileUp, Share2, Award, ShieldCheck } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Badge } from '@/components/ui/badge';
 
 const certificates = [
   { id: 1, name: 'Advanced React', issuer: 'Dev University', date: '2023-05-20', image: PlaceHolderImages[0]?.imageUrl || 'https://picsum.photos/seed/1/600/400' },
