@@ -2,10 +2,22 @@ import type { Metadata } from 'next';
 import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import './globals.css';
+import { FirebaseClientProvider } from '@/firebase/client-provider';
+import { Inter, Lexend } from 'next/font/google';
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const lexend = Lexend({
+  subsets: ['latin'],
+  variable: '--font-lexend',
+});
 
 export const metadata: Metadata = {
-  title: 'CertSecure Demo',
-  description: 'Firebase project setup guide for a Next.js certificate verification app',
+  title: 'CertSecure - Certificate Verification Platform',
+  description: 'A futuristic platform for secure certificate verification and management, built with Next.js and Firebase.',
 };
 
 export default function RootLayout({
@@ -15,15 +27,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Literata:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
       <body className={cn(
-        "h-full font-body antialiased",
+        "h-full antialiased",
+        inter.variable,
+        lexend.variable
       )}>
-        {children}
+        <FirebaseClientProvider>
+          {children}
+        </FirebaseClientProvider>
         <Toaster />
       </body>
     </html>
