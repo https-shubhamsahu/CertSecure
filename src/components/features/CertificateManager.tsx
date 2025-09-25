@@ -20,6 +20,7 @@ import {
   Clock,
   User,
   Building,
+  Search,
 } from "lucide-react";
 
 type VerificationStatus = "idle" | "uploading" | "verifying" | "success" | "error";
@@ -43,6 +44,8 @@ export default function CertificateManager() {
       setFile(selectedFile);
       setStatus("idle");
       setProgress(0);
+      setVerificationResult(null);
+      setError(null);
     }
   };
 
@@ -80,7 +83,7 @@ export default function CertificateManager() {
     switch (status) {
       case "success":
         return (
-          <Card className="bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
+          <Card className="bg-green-50/50 dark:bg-green-900/10 border-green-500/30 animate-fade-in">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <ShieldCheck className="w-8 h-8 text-green-600 dark:text-green-500" />
@@ -109,7 +112,7 @@ export default function CertificateManager() {
         );
       case "error":
         return (
-          <Card className="bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+          <Card className="bg-red-50/50 dark:bg-red-900/10 border-red-500/30 animate-fade-in">
             <CardHeader>
               <div className="flex items-center gap-3">
                 <ShieldX className="w-8 h-8 text-red-600 dark:text-red-500" />
@@ -131,31 +134,38 @@ export default function CertificateManager() {
   };
 
   return (
-    <Card>
+    <Card className="w-full max-w-2xl mx-auto shadow-2xl bg-card/80 backdrop-blur-lg border-primary/20">
       <CardHeader>
-        <CardTitle className="font-headline text-3xl flex items-center gap-2">
-          <ShieldCheck className="w-8 h-8 text-primary" />
-          <span>Certificate Verification</span>
-        </CardTitle>
-        <CardDescription>
-          Upload a certificate file to verify its authenticity.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="flex flex-col sm:flex-row gap-2">
-          <Input type="file" onChange={handleFileChange} className="flex-grow" />
-          <Button onClick={handleVerify} disabled={!file || status === "uploading" || status === "verifying"}>
-            <FileUp className="mr-2 h-4 w-4" />
-            {status === "uploading" || status === "verifying"
-              ? "Verifying..."
-              : "Upload & Verify"}
-          </Button>
+        <div className="flex items-center gap-3">
+            <div className="p-3 bg-primary/10 rounded-lg border border-primary/20">
+                <Search className="h-8 w-8 text-primary" />
+            </div>
+            <div>
+                <CardTitle className="text-3xl font-bold font-literata">Quick Verification</CardTitle>
+                <CardDescription>
+                Upload a certificate file to instantly check its authenticity.
+                </CardDescription>
+            </div>
         </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="p-6 border-2 border-dashed rounded-lg bg-muted/30">
+            <div className="flex flex-col sm:flex-row gap-4">
+            <Input type="file" onChange={handleFileChange} className="flex-grow bg-background/70" />
+            <Button onClick={handleVerify} disabled={!file || status === "uploading" || status === "verifying"} className="w-full sm:w-auto">
+                <ShieldCheck className="mr-2 h-4 w-4" />
+                {status === "uploading" || status === "verifying"
+                ? "Verifying..."
+                : "Verify Now"}
+            </Button>
+            </div>
+        </div>
+
         {(status === "uploading" || status === "verifying") && (
-          <div className="space-y-2">
+          <div className="space-y-2 pt-4">
             <Progress value={progress} className="w-full" />
             <p className="text-sm text-muted-foreground text-center animate-pulse">
-              {status === "uploading" ? "Uploading file..." : "Verifying certificate..."}
+              {status === "uploading" ? "Uploading file..." : "Verifying certificate signature..."}
             </p>
           </div>
         )}
