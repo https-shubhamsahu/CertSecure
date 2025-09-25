@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { UploadCloud, Database, FileText, BarChart2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import Link from 'next/link';
 
 const issuanceData = [
   { month: 'Jan', count: 120 },
@@ -28,7 +29,9 @@ export default function UniversityDashboard({ user }: { user: any }) {
                         <CardDescription className="text-blue-700">Upload multiple certificates at once.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700">Upload Now</Button>
+                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                            <Link href="/app/upload">Upload Now</Link>
+                        </Button>
                     </CardContent>
                 </Card>
                 <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
@@ -40,7 +43,9 @@ export default function UniversityDashboard({ user }: { user: any }) {
                         <CardDescription className="text-blue-700">Manage student records and credentials.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700">Manage Students</Button>
+                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                            <Link href="#">Manage Students</Link>
+                        </Button>
                     </CardContent>
                 </Card>
                 <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
@@ -52,7 +57,9 @@ export default function UniversityDashboard({ user }: { user: any }) {
                         <CardDescription className="text-blue-700">Issue new digital certificates securely.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700">Issue Certificate</Button>
+                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                            <Link href="#">Issue Certificate</Link>
+                        </Button>
                     </CardContent>
                 </Card>
                 <Card className="bg-white/80 border-blue-200 shadow-md backdrop-blur-sm">
@@ -64,7 +71,9 @@ export default function UniversityDashboard({ user }: { user: any }) {
                         <CardDescription className="text-blue-700">View issuance trends and statistics.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button className="w-full bg-blue-600 hover:bg-blue-700">View Analytics</Button>
+                        <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
+                            <Link href="#">View Analytics</Link>
+                        </Button>
                     </CardContent>
                 </Card>
             </div>
@@ -98,4 +107,3 @@ export default function UniversityDashboard({ user }: { user: any }) {
         </div>
     );
 }
-
