@@ -60,19 +60,19 @@ export default function AppLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/app" tooltip="Dashboard" isActive={true}>
+                <SidebarMenuButton tooltip="Dashboard" isActive={true}>
                   <Home />
                   <span>Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/app/upload" tooltip="Upload Certificate">
+                <SidebarMenuButton tooltip="Upload Certificate">
                   <Upload />
                   <span>Upload</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton href="/app/verify" tooltip="Verify Certificate">
+                <SidebarMenuButton tooltip="Verify Certificate">
                   <ShieldCheck />
                   <span>Verify</span>
                 </SidebarMenuButton>
