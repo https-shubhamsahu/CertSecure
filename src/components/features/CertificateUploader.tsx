@@ -145,7 +145,9 @@ export default function CertificateUploader() {
     let statusColor = '#16a34a'; // Green for Verified
     if (result.status === 'FRAUDULENT') statusColor = '#dc2626'; // Red for Fraudulent
     if (result.status === 'SUSPICIOUS') statusColor = '#f59e0b'; // Amber for Suspicious
-    doc.text(`Result: ${result.status}`, 14, 50, { textColor: statusColor });
+    doc.setTextColor(statusColor);
+    doc.text(`Result: ${result.status}`, 14, 50);
+    doc.setTextColor(0);
     
     doc.setFontSize(12);
     doc.text("Certificate Details", 14, 62);

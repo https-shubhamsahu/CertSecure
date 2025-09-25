@@ -116,10 +116,8 @@ has been awarded the degree of
 Bachelor of Creative Arts
 Date: 2023-10-27
 `,
-    sha5p12Hash: '0'.repeat(128),
+    sha512Hash: '0'.repeat(128),
   },
 };
 
-// You can expand this list with more fictional data.
-// For the demo, we will use the file name to look up the result.
-// A real application would use hashing and database lookups.
+    
