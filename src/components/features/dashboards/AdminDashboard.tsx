@@ -20,59 +20,59 @@ export default function AdminDashboard({ user }: { user: any }) {
     return (
         <div className="grid gap-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-slate-800/60 border-slate-700 text-white backdrop-blur-sm">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-300">Total Users</CardTitle>
-                        <Users className="h-4 w-4 text-slate-400" />
+                        <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                        <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">10,234</div>
-                        <p className="text-xs text-slate-400">+5.2% from last month</p>
+                        <p className="text-xs text-muted-foreground">+5.2% from last month</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-slate-800/60 border-slate-700 text-white backdrop-blur-sm">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-300">Fraud Alerts</CardTitle>
-                        <ShieldAlert className="h-4 w-4 text-red-400" />
+                        <CardTitle className="text-sm font-medium">Fraud Alerts</CardTitle>
+                        <ShieldAlert className="h-4 w-4 text-destructive" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-red-400">12</div>
-                        <p className="text-xs text-slate-400">Action Required</p>
+                        <div className="text-2xl font-bold text-destructive">12</div>
+                        <p className="text-xs text-muted-foreground">Action Required</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-slate-800/60 border-slate-700 text-white backdrop-blur-sm">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-300">Universities</CardTitle>
-                        <Building2 className="h-4 w-4 text-slate-400" />
+                        <CardTitle className="text-sm font-medium">Universities</CardTitle>
+                        <Building2 className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">89</div>
-                        <p className="text-xs text-slate-400">+3 since last week</p>
+                        <p className="text-xs text-muted-foreground">+3 since last week</p>
                     </CardContent>
                 </Card>
-                <Card className="bg-slate-800/60 border-slate-700 text-white backdrop-blur-sm">
+                <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium text-slate-300">System Status</CardTitle>
-                        <Settings className="h-4 w-4 text-green-400" />
+                        <CardTitle className="text-sm font-medium">System Status</CardTitle>
+                        <Settings className="h-4 w-4 text-green-500" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-400">Operational</div>
-                        <p className="text-xs text-slate-400">All systems normal</p>
+                        <div className="text-2xl font-bold text-green-500">Operational</div>
+                        <p className="text-xs text-muted-foreground">All systems normal</p>
                     </CardContent>
                 </Card>
             </div>
             
-            <Card className="bg-slate-800/60 border-slate-700 text-white backdrop-blur-sm col-span-1 lg:col-span-2">
+            <Card className="col-span-1 lg:col-span-2">
                 <CardHeader>
                     <CardTitle>System Overview</CardTitle>
-                    <CardDescription className="text-slate-400">Real-time verification & fraud statistics</CardDescription>
+                    <CardDescription>Real-time verification & fraud statistics</CardDescription>
                 </CardHeader>
                 <CardContent className="pl-2">
                     <ResponsiveContainer width="100%" height={350}>
                         <RechartsBarChart data={data}>
                             <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted) / 0.2)" />
-                            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} />
-                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                            <XAxis dataKey="name" stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
+                            <YAxis stroke="hsl(var(--muted-foreground))" fontSize={12} tickLine={false} axisLine={false} />
                             <Tooltip
                               contentStyle={{
                                 backgroundColor: 'hsl(var(--background) / 0.8)',
