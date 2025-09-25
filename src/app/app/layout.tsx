@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { Sidebar, SidebarProvider, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,6 +16,7 @@ export default function AppLayout({
 }) {
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const pathname = usePathname();
   const auth = useAuth();
 
   useEffect(() => {
@@ -60,19 +61,19 @@ export default function AppLayout({
           <SidebarContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Dashboard" isActive={true}>
+                <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
                   <Home />
                   <span>Dashboard</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Upload Certificate">
+                <SidebarMenuButton tooltip="Upload Certificate" isActive={pathname === '/app/upload'} onClick={() => router.push('/app/upload')}>
                   <Upload />
                   <span>Upload</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton tooltip="Verify Certificate">
+                <SidebarMenuButton tooltip="Verify Certificate" isActive={pathname === '/app/verify'} onClick={() => router.push('/app/verify')}>
                   <ShieldCheck />
                   <span>Verify</span>
                 </SidebarMenuButton>
