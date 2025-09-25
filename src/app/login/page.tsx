@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShieldCheck, LogIn } from 'lucide-react';
+import { ShieldCheck, LogIn, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
@@ -65,7 +66,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen w-full bg-gradient-to-br from-green-50 via-teal-50 to-gray-100 dark:from-gray-900 dark:via-teal-900/20 dark:to-black p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full bg-gradient-to-br from-green-50 via-teal-50 to-gray-100 dark:from-gray-900 dark:via-teal-900/20 dark:to-black p-4">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]"></div>
       <Card className="w-full max-w-md shadow-2xl bg-card/80 backdrop-blur-lg border-primary/20">
         <CardHeader className="text-center">
@@ -123,6 +124,22 @@ export default function LoginPage() {
             </p>
           </CardFooter>
         </form>
+      </Card>
+
+      <Card className="w-full max-w-md mt-6 shadow-xl bg-card/80 backdrop-blur-lg border-primary/20">
+        <CardHeader>
+          <div className='flex items-center gap-3'>
+            <Users className="h-6 w-6 text-primary" />
+            <CardTitle className="text-xl font-bold font-literata">Demo Credentials</CardTitle>
+          </div>
+          <CardDescription>Use these credentials to explore different roles.</CardDescription>
+        </CardHeader>
+        <CardContent className="text-sm space-y-2 text-muted-foreground">
+          <p><strong className='text-foreground'>Admin:</strong> admin@demo.com / demo123</p>
+          <p><strong className='text-foreground'>University:</strong> university@demo.com / demo123</p>
+          <p><strong className='text-foreground'>Employer:</strong> employer@demo.com / demo123</p>
+          <p><strong className='text-foreground'>Student:</strong> student@demo.com / demo123</p>
+        </CardContent>
       </Card>
     </div>
   );
