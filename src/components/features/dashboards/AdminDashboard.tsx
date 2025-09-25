@@ -9,6 +9,7 @@ import StatCards from './admin/StatCards';
 import VerificationTrendChart from './admin/charts/VerificationChart';
 import UniversityDistributionChart from './admin/charts/UniversityDistributionChart';
 import RecentActivity from './admin/RecentActivity';
+import Link from 'next/link';
 
 export default function AdminDashboard({ user }: { user: any }) {
     return (
@@ -23,9 +24,11 @@ export default function AdminDashboard({ user }: { user: any }) {
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <input placeholder="Search universities..." className="bg-background/80 w-full rounded-md border py-2 pl-10 pr-4 text-sm" />
                     </div>
-                    <Button variant="outline">
-                        <Map className="mr-2 h-4 w-4" />
-                        View Regions
+                    <Button variant="outline" asChild>
+                        <Link href="/app/analytics">
+                            <Map className="mr-2 h-4 w-4" />
+                            View Regions
+                        </Link>
                     </Button>
                 </div>
             </header>
