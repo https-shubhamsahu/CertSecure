@@ -3,7 +3,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck, AlertTriangle, Scale, SpellCheck, Stamp, Database, Fingerprint } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -15,23 +15,30 @@ import { jsPDF } from 'jspdf';
 import { useToast } from '@/hooks/use-toast';
 import { DUMMY_CERTIFICATES, CertificateData, VerificationStatus } from '@/lib/dummy-data';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { cn } from '@/lib/utils';
 
 type Status = 'idle' | 'uploading' | 'processing' | 'success' | 'error' | 'suspicious';
-type ProcessingStep = 'ocr' | 'ai' | 'hash' | 'done';
+type ProcessingStep = 'ocr' | 'structure' | 'consistency' | 'seal' | 'database' | 'hash' | 'done';
 
-const ProcessingStepDetails = {
-  ocr: { text: 'Extracting text (OCR)...', icon: ScanText, progress: 25 },
-  ai: { text: 'AI fraud analysis...', icon: Bot, progress: 50 },
-  hash: { text: 'Generating SHA-512 hash...', icon: Hash, progress: 75 },
+const ProcessingStepDetails: Record<ProcessingStep, { text: string; icon: React.ElementType; progress: number }> = {
+  ocr: { text: 'Extracting text (OCR)...', icon: ScanText, progress: 15 },
+  structure: { text: 'Analyzing document structure...', icon: Scale, progress: 30 },
+  consistency: { text: 'Verifying text consistency...', icon: SpellCheck, progress: 45 },
+  seal: { text: 'Validating seal and signature...', icon: Stamp, progress: 60 },
+  database: { text: 'Cross-verifying with university database...', icon: Database, progress: 75 },
+  hash: { text: 'Generating blockchain hash...', icon: Fingerprint, progress: 90 },
   done: { text: 'Finalizing...', icon: CheckCircle, progress: 100 },
 };
+
+const allProcessingSteps: ProcessingStep[] = ['ocr', 'structure', 'consistency', 'seal', 'database', 'hash', 'done'];
 
 export default function CertificateUploader() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('idle');
   const [progress, setProgress] = useState(0);
-  const [processingStep, setProcessingStep] = useState<ProcessingStep | null>(null);
+  const [completedSteps, setCompletedSteps] = useState<ProcessingStep[]>([]);
+  const [currentStep, setCurrentStep] = useState<ProcessingStep | null>(null);
   const [result, setResult] = useState<CertificateData | null>(null);
   const { toast } = useToast();
 
@@ -68,30 +75,34 @@ export default function CertificateUploader() {
     multiple: false,
   });
 
+  const runProcessingStep = (step: ProcessingStep, duration: number) => {
+    return new Promise<void>(resolve => {
+        setCurrentStep(step);
+        setProgress(ProcessingStepDetails[step].progress);
+        setTimeout(() => {
+            setCompletedSteps(prev => [...prev, step]);
+            resolve();
+        }, duration);
+    });
+  };
+
   const handleProcess = async () => {
     if (!file) return;
-
+  
     setStatus('uploading');
-    setProgress(10);
+    setProgress(5);
     await new Promise(res => setTimeout(res, 500));
     
     setStatus('processing');
+    setProgress(10);
     
-    setProcessingStep('ocr');
-    setProgress(ProcessingStepDetails.ocr.progress);
-    await new Promise(res => setTimeout(res, 1000 + Math.random() * 500));
-    
-    setProcessingStep('ai');
-    setProgress(ProcessingStepDetails.ai.progress);
-    await new Promise(res => setTimeout(res, 1500 + Math.random() * 1000));
-    
-    setProcessingStep('hash');
-    setProgress(ProcessingStepDetails.hash.progress);
-    await new Promise(res => setTimeout(res, 1000 + Math.random() * 500));
-    
-    setProcessingStep('done');
-    setProgress(ProcessingStepDetails.done.progress);
-    await new Promise(res => setTimeout(res, 500));
+    await runProcessingStep('ocr', 3000 + Math.random() * 1000);
+    await runProcessingStep('structure', 3000 + Math.random() * 1000);
+    await runProcessingStep('consistency', 2500 + Math.random() * 1000);
+    await runProcessingStep('seal', 4000 + Math.random() * 1500);
+    await runProcessingStep('database', 3500 + Math.random() * 1000);
+    await runProcessingStep('hash', 2000 + Math.random() * 500);
+    await runProcessingStep('done', 1000);
 
     // In a real app, you would hash the file and look up the hash.
     // For this demo, we'll use the filename to get a predictable result.
@@ -116,7 +127,8 @@ export default function CertificateUploader() {
     setPreview(null);
     setStatus('idle');
     setProgress(0);
-    setProcessingStep(null);
+    setCompletedSteps([]);
+    setCurrentStep(null);
     setResult(null);
   };
 
@@ -295,17 +307,31 @@ export default function CertificateUploader() {
         );
       case 'uploading':
       case 'processing':
-        const currentStep = processingStep || 'ocr';
-        const CurrentIcon = ProcessingStepDetails[currentStep].icon;
         return (
             <div className="text-center p-8 border rounded-lg bg-card animate-fade-in">
-                <Loader2 className="w-16 h-16 text-primary mx-auto animate-spin mb-4" />
-                <h3 className="text-2xl font-semibold mb-2">Processing Certificate</h3>
-                <p className="text-muted-foreground mb-6">Please wait while we securely analyze your document.</p>
-                <Progress value={progress} className="w-full max-w-md mx-auto mb-4" />
-                <div className="flex items-center justify-center gap-2 text-muted-foreground font-medium animate-pulse">
-                    <CurrentIcon className="w-5 h-5"/>
-                    <p>{ProcessingStepDetails[currentStep].text}</p>
+                <Bot className="w-16 h-16 text-primary mx-auto animate-pulse mb-4" />
+                <h3 className="text-2xl font-semibold mb-2">AI Verification in Progress</h3>
+                <p className="text-muted-foreground mb-6">Our AI is securely analyzing your document. This may take a moment.</p>
+                <Progress value={progress} className="w-full max-w-md mx-auto mb-6" />
+                <div className="max-w-md mx-auto text-left space-y-2">
+                    {allProcessingSteps.map((step) => {
+                        const isCompleted = completedSteps.includes(step);
+                        const isCurrent = currentStep === step;
+                        const { text, icon: Icon } = ProcessingStepDetails[step];
+
+                        return (
+                            <div key={step} className={cn("flex items-center gap-3 text-sm transition-opacity", isCompleted ? "text-muted-foreground" : "text-foreground", isCurrent ? "" : "opacity-60")}>
+                                {isCompleted ? (
+                                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
+                                ) : isCurrent ? (
+                                    <Loader2 className="w-5 h-5 text-primary animate-spin flex-shrink-0" />
+                                ) : (
+                                    <div className="w-5 h-5 flex-shrink-0" />
+                                )}
+                                <span className={cn("flex-grow", isCompleted && "line-through")}>{text}</span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         );
@@ -338,3 +364,5 @@ export default function CertificateUploader() {
     </Card>
   );
 }
+
+    
