@@ -58,7 +58,7 @@ export default function UniversityDashboard({ user }: { user: any }) {
                     </CardHeader>
                     <CardContent>
                         <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
-                            <Link href="#">Issue Certificate</Link>
+                            <Link href="/app/upload">Issue Certificate</Link>
                         </Button>
                     </CardContent>
                 </Card>
