@@ -3,16 +3,16 @@ import { Toaster } from "@/components/ui/toaster"
 import { cn } from '@/lib/utils';
 import './globals.css';
 import { FirebaseClientProvider } from '@/firebase/client-provider';
-import { Inter, Lexend } from 'next/font/google';
+import { Inter, Literata } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 });
 
-const lexend = Lexend({
+const literata = Literata({
   subsets: ['latin'],
-  variable: '--font-lexend',
+  variable: '--font-literata',
 });
 
 export const metadata: Metadata = {
@@ -30,7 +30,8 @@ export default function RootLayout({
       <body className={cn(
         "h-full antialiased",
         inter.variable,
-        lexend.variable
+        literata.variable,
+        "font-sans"
       )}>
         <FirebaseClientProvider>
           {children}
