@@ -12,14 +12,25 @@ const iconMap = {
     systemUptime: <Server className="h-5 w-5 text-emerald-500" />,
 };
 
-export default function StatCards({ stats }: { stats: any[] }) {
+type StatId = keyof typeof iconMap;
+
+type Stat = {
+    id: StatId;
+    title: string;
+    value: string;
+    change: string;
+    changeType: 'increase' | 'decrease';
+    period: string;
+};
+
+export default function StatCards({ stats }: { stats: Stat[] }) {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {stats.map((stat) => (
                 <Card key={stat.id} className="bg-glass">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                         <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                        {iconMap[stat.id as keyof typeof iconMap]}
+                        {iconMap[stat.id]}
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{stat.value}</div>

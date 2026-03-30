@@ -13,6 +13,10 @@ import { ShieldCheck, LogIn, Users } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
+type UserRole = 'Student' | 'Employer' | 'University' | 'Admin';
+
+const GUEST_ROLE_STORAGE_KEY = 'certsecure:guestRole';
+
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -44,14 +48,29 @@ export default function LoginPage() {
 
     try {
       initiateEmailSignIn(auth, email, password);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Login failed:", error);
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: error.message || "An unexpected error occurred.",
+        description: message,
       });
       setIsLoading(false);
+    }
+  };
+
+  const handleGuestLogin = (role: UserRole) => {
+    try {
+      localStorage.setItem(GUEST_ROLE_STORAGE_KEY, role);
+      router.push('/app');
+    } catch (error) {
+      console.error('Failed to set guest role:', error);
+      toast({
+        variant: 'destructive',
+        title: 'Guest Login Failed',
+        description: 'Could not enable guest mode in this browser.',
+      });
     }
   };
   
@@ -143,6 +162,23 @@ export default function LoginPage() {
           <p><strong className='text-foreground'>Employer:</strong> employer@demo.com / demo123</p>
           <p><strong className='text-foreground'>Student:</strong> student@demo.com / demo123</p>
         </CardContent>
+        <CardFooter className="flex flex-col gap-2">
+          <p className="text-xs text-muted-foreground">Or continue without an account:</p>
+          <div className="grid w-full grid-cols-2 gap-2">
+            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Admin')}>
+              Guest Admin
+            </Button>
+            <Button type="button" variant="outline" onClick={() => handleGuestLogin('University')}>
+              Guest University
+            </Button>
+            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Employer')}>
+              Guest Employer
+            </Button>
+            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Student')}>
+              Guest Student
+            </Button>
+          </div>
+        </CardFooter>
       </Card>
     </div>
   );

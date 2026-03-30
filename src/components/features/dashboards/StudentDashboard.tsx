@@ -15,7 +15,8 @@ const certificates = [
   { id: 3, name: 'Firebase for Web', issuer: 'Google Devs', date: '2023-09-01', image: 'https://picsum.photos/seed/3/600/400' },
 ]
 
-export default function StudentDashboard({ user }: { user: any }) {
+export default function StudentDashboard({ user }: { user: unknown }) {
+    void user;
     return (
         <div className="grid gap-6">
             <Card className="bg-gradient-to-tr from-primary to-purple-600 text-white shadow-2xl">

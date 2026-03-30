@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Check, ChevronDown, Clock, Search, ShieldAlert, Users, X, Map } from 'lucide-react';
+import { Search, Map } from 'lucide-react';
 import { adminDashboardStats, universityDistributionData, verificationTrendData } from '@/lib/admin-dashboard-data';
 import StatCards from './admin/StatCards';
 import VerificationTrendChart from './admin/charts/VerificationChart';
@@ -11,13 +11,17 @@ import UniversityDistributionChart from './admin/charts/UniversityDistributionCh
 import RecentActivity from './admin/RecentActivity';
 import Link from 'next/link';
 
-export default function AdminDashboard({ user }: { user: any }) {
+type DashboardUser = {
+    firstName: string;
+};
+
+export default function AdminDashboard({ user }: { user: DashboardUser }) {
     return (
         <div className="space-y-6">
             <header className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tighter">Admin Dashboard</h1>
-                    <p className="text-muted-foreground">Welcome back, {user.firstName}. Here's the nationwide overview.</p>
+                    <p className="text-muted-foreground">Welcome back, {user.firstName}. Here&apos;s the nationwide overview.</p>
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="relative w-full md:w-64">

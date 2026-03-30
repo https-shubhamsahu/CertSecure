@@ -1,5 +1,16 @@
 
-export const adminDashboardStats = [
+export type AdminDashboardStatId = 'totalUniversities' | 'certificatesVerified' | 'fraudDetected' | 'systemUptime';
+
+export type AdminDashboardStat = {
+    id: AdminDashboardStatId;
+    title: string;
+    value: string;
+    change: string;
+    changeType: 'increase' | 'decrease';
+    period: string;
+};
+
+export const adminDashboardStats: AdminDashboardStat[] = [
     { id: 'totalUniversities', title: 'Total Universities', value: '2,847', change: '+12.5%', changeType: 'increase', period: 'this month' },
     { id: 'certificatesVerified', title: 'Verified (Today)', value: '45,231', change: '+5.2%', changeType: 'increase', period: 'vs yesterday' },
     { id: 'fraudDetected', title: 'Fraud Alerts (24h)', value: '127', change: '-2.1%', changeType: 'decrease', period: 'vs yesterday' },
@@ -28,7 +39,15 @@ export const verificationTrendData = [
   { name: 'Dec', verified: 8490, fraud: 33 },
 ];
 
-export const recentActivity = [
+export type RecentActivityStatus = 'Verified' | 'Fraudulent' | 'Pending';
+
+export const recentActivity: Array<{
+    id: number;
+    university: string;
+    state: string;
+    status: RecentActivityStatus;
+    timestamp: string;
+}> = [
     { id: 1, university: 'Delhi University', state: 'Delhi', status: 'Verified', timestamp: '2 minutes ago' },
     { id: 2, university: 'Mumbai University', state: 'Maharashtra', status: 'Fraudulent', timestamp: '5 minutes ago' },
     { id: 3, university: 'Anna University', state: 'Tamil Nadu', status: 'Verified', timestamp: '10 minutes ago' },

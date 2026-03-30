@@ -13,11 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import {
-  FileUp,
   ShieldCheck,
   ShieldX,
-  CheckCircle,
-  XCircle,
   Clock,
   User,
   Building,

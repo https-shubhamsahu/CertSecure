@@ -82,9 +82,15 @@ export default function RegisterPage() {
 
         router.push('/app');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Registration failed:", error);
-      if (error.code === 'auth/email-already-in-use') {
+      const errorCode =
+        typeof error === 'object' && error !== null && 'code' in error
+          ? (error as { code?: string }).code
+          : undefined;
+      const message = error instanceof Error ? error.message : "An unexpected error occurred.";
+
+      if (errorCode === 'auth/email-already-in-use') {
         toast({
           variant: "destructive",
           title: "Registration Failed",
@@ -94,7 +100,7 @@ export default function RegisterPage() {
         toast({
           variant: "destructive",
           title: "Registration Failed",
-          description: error.message || "An unexpected error occurred.",
+          description: message,
         });
       }
       setIsLoading(false);

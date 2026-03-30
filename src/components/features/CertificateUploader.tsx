@@ -2,13 +2,12 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { FileUp, CheckCircle, XCircle, Loader2, FileText, ScanText, Bot, Hash, Download, QrCode, ShieldCheck, AlertTriangle, Scale, SpellCheck, Stamp, Database, Fingerprint } from 'lucide-react';
+import { useDropzone, type FileRejection } from 'react-dropzone';
+import { FileUp, CheckCircle, XCircle, Loader2, FileText, Bot, Download, ShieldCheck, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import QRCode from 'qrcode.react';
 import { jsPDF } from 'jspdf';
@@ -20,14 +19,14 @@ import { cn } from '@/lib/utils';
 type Status = 'idle' | 'uploading' | 'processing' | 'success' | 'error' | 'suspicious';
 type ProcessingStep = 'ocr' | 'structure' | 'consistency' | 'seal' | 'database' | 'hash' | 'done';
 
-const ProcessingStepDetails: Record<ProcessingStep, { text: string; icon: React.ElementType; progress: number }> = {
-  ocr: { text: 'Extracting text (OCR)...', icon: ScanText, progress: 15 },
-  structure: { text: 'Analyzing document structure...', icon: Scale, progress: 30 },
-  consistency: { text: 'Verifying text consistency...', icon: SpellCheck, progress: 45 },
-  seal: { text: 'Validating seal and signature...', icon: Stamp, progress: 60 },
-  database: { text: 'Cross-verifying with university database...', icon: Database, progress: 75 },
-  hash: { text: 'Generating blockchain hash...', icon: Fingerprint, progress: 90 },
-  done: { text: 'Finalizing...', icon: CheckCircle, progress: 100 },
+const ProcessingStepDetails: Record<ProcessingStep, { text: string; progress: number }> = {
+  ocr: { text: 'Extracting text (OCR)...', progress: 15 },
+  structure: { text: 'Analyzing document structure...', progress: 30 },
+  consistency: { text: 'Verifying text consistency...', progress: 45 },
+  seal: { text: 'Validating seal and signature...', progress: 60 },
+  database: { text: 'Cross-verifying with university database...', progress: 75 },
+  hash: { text: 'Generating blockchain hash...', progress: 90 },
+  done: { text: 'Finalizing...', progress: 100 },
 };
 
 const allProcessingSteps: ProcessingStep[] = ['ocr', 'structure', 'consistency', 'seal', 'database', 'hash', 'done'];
@@ -42,7 +41,7 @@ export default function CertificateUploader() {
   const [result, setResult] = useState<CertificateData | null>(null);
   const { toast } = useToast();
 
-  const onDrop = useCallback((acceptedFiles: File[], fileRejections: any[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], fileRejections: FileRejection[]) => {
     if (fileRejections.length > 0) {
         toast({
             variant: "destructive",
@@ -319,7 +318,7 @@ export default function CertificateUploader() {
                     {allProcessingSteps.map((step) => {
                         const isCompleted = completedSteps.includes(step);
                         const isCurrent = currentStep === step;
-                        const { text, icon: Icon } = ProcessingStepDetails[step];
+                      const { text } = ProcessingStepDetails[step];
 
                         return (
                             <div key={step} className={cn("flex items-center gap-3 text-sm transition-opacity", isCompleted ? "text-muted-foreground" : "text-foreground", isCurrent ? "" : "opacity-60")}>

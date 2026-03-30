@@ -2,11 +2,20 @@
 'use client';
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const COLORS = ['#2563eb', '#10b981', '#f59e0b', '#6366f1'];
 
-const CustomTooltip = ({ active, payload }: any) => {
+type DistributionDatum = {
+    name: string;
+    value: number;
+};
+
+type TooltipPayloadItem = {
+    name: string;
+    value: number;
+};
+
+const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: TooltipPayloadItem[] }) => {
     if (active && payload && payload.length) {
         return (
             <div className="rounded-lg border bg-background p-2 shadow-sm">
@@ -27,7 +36,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     return null;
 };
 
-export default function UniversityDistributionChart({ data }: { data: any[] }) {
+export default function UniversityDistributionChart({ data }: { data: DistributionDatum[] }) {
     return (
         <ResponsiveContainer width="100%" height={200}>
             <PieChart>

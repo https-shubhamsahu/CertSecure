@@ -1,14 +1,21 @@
 import type {NextConfig} from 'next';
 
+const rawBasePath = (process.env.NEXT_PUBLIC_BASE_PATH ?? '').trim();
+const basePath = rawBasePath
+  ? rawBasePath.startsWith('/')
+    ? rawBasePath
+    : `/${rawBasePath}`
+  : '';
+
 const nextConfig: NextConfig = {
   /* config options here */
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
+  outputFileTracingRoot: process.cwd(),
+  output: 'export',
+  trailingSlash: true,
+  basePath,
+  assetPrefix: basePath,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

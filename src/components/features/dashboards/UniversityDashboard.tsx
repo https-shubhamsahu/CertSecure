@@ -16,7 +16,8 @@ const issuanceData = [
   { month: 'Jun', count: 230 },
 ];
 
-export default function UniversityDashboard({ user }: { user: any }) {
+export default function UniversityDashboard({ user }: { user: unknown }) {
+    void user;
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

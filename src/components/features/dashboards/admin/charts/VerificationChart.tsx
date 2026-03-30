@@ -3,7 +3,13 @@
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-export default function VerificationTrendChart({ data }: { data: any[] }) {
+type VerificationTrendPoint = {
+    name: string;
+    verified: number;
+    fraud: number;
+};
+
+export default function VerificationTrendChart({ data }: { data: VerificationTrendPoint[] }) {
     return (
         <ResponsiveContainer width="100%" height={300}>
             <AreaChart

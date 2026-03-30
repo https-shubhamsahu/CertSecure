@@ -1,11 +1,10 @@
 
 'use client';
 
-import { BarChart2, CheckCircle, ShieldAlert, Clock, PieChart as PieChartIcon } from 'lucide-react';
+import { BarChart2, CheckCircle, ShieldAlert } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, Sector } from 'recharts';
-import { useState }from 'react';
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 
 const verificationData = [
@@ -29,9 +28,23 @@ const COLORS = {
     Pending: 'hsl(var(--warning))',
 };
 
-const renderActiveShape = (props: any) => {
+type ActiveShapeProps = {
+    cx: number;
+    cy: number;
+    midAngle: number;
+    innerRadius: number;
+    outerRadius: number;
+    startAngle: number;
+    endAngle: number;
+    fill: string;
+    payload: { name: string };
+    percent: number;
+    value: number;
+};
+
+const renderActiveShape = (props: unknown) => {
   const RADIAN = Math.PI / 180;
-  const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props;
+    const { cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle, fill, payload, percent, value } = props as ActiveShapeProps;
   const sin = Math.sin(-RADIAN * midAngle);
   const cos = Math.cos(-RADIAN * midAngle);
   const sx = cx + (outerRadius + 10) * cos;
@@ -78,7 +91,7 @@ const renderActiveShape = (props: any) => {
 
 export default function AnalyticsPage() {
     const [activeIndex, setActiveIndex] = useState(0);
-    const onPieEnter = (_: any, index: number) => {
+    const onPieEnter = (_data: unknown, index: number) => {
         setActiveIndex(index);
     };
 

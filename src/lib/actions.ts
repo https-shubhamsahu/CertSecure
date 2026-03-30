@@ -45,7 +45,7 @@ export async function generateRulesAction(
       certificateAccess: validatedFields.data.certificateAccess,
     });
     return { rules: result.securityRules, message: "Successfully generated rules." };
-  } catch (error) {
+  } catch {
     return { message: "Failed to generate security rules." };
   }
 }

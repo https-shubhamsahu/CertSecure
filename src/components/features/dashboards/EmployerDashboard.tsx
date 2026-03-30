@@ -15,7 +15,8 @@ const recentVerifications = [
   { id: 'CERT-004', student: 'Emily Davis', status: 'Verified', date: '2023-10-23' },
 ];
 
-export default function EmployerDashboard({ user }: { user: any }) {
+export default function EmployerDashboard({ user }: { user: unknown }) {
+  void user;
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">

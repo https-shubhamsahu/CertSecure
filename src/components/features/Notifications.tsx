@@ -39,7 +39,7 @@ const getIcon = (type: Notification['type']) => {
   }
 };
 
-export default function Notifications({ role }: { role: 'Admin' | 'University' | string }) {
+export default function Notifications({ role }: { role?: 'Admin' | 'University' | string }) {
   const notifications = role === 'Admin' ? adminNotifications : role === 'University' ? universityNotifications : [];
   const unreadCount = notifications.filter(n => !n.read).length;
 

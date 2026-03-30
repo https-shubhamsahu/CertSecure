@@ -4,10 +4,12 @@
 import { recentActivity } from '@/lib/admin-dashboard-data';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { cn } from '@/lib/utils';
 import { Check, ShieldAlert, Clock } from 'lucide-react';
 
-const activityIcons = {
+import type { ReactNode } from 'react';
+import type { RecentActivityStatus } from '@/lib/admin-dashboard-data';
+
+const activityIcons: Record<RecentActivityStatus, ReactNode> = {
     Verified: <Check className="h-4 w-4 text-emerald-500" />,
     Fraudulent: <ShieldAlert className="h-4 w-4 text-red-500" />,
     Pending: <Clock className="h-4 w-4 text-amber-500" />,

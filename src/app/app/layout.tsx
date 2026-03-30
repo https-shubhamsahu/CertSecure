@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { Sidebar, SidebarProvider, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
@@ -13,7 +13,17 @@ import Notifications from '@/components/features/Notifications';
 import { useDoc } from '@/firebase/firestore/use-doc';
 import { doc } from 'firebase/firestore';
 import { useFirestore } from '@/firebase/provider';
-import { useMemo } from 'react';
+
+type UserRole = 'Student' | 'Employer' | 'University' | 'Admin';
+
+type UserDoc = {
+  firstName?: string;
+  lastName?: string;
+  email?: string | null;
+  role?: UserRole;
+};
+
+const GUEST_ROLE_STORAGE_KEY = 'certsecure:guestRole';
 
 
 export default function AppLayout({
@@ -27,21 +37,41 @@ export default function AppLayout({
   const auth = useAuth();
   const firestore = useFirestore();
 
+  const [guestRole, setGuestRole] = useState<UserRole | null>(null);
+  const [isGuestRoleResolved, setIsGuestRoleResolved] = useState(false);
+
+  const isGuestModeEnabled = process.env.NEXT_PUBLIC_ENABLE_GUEST !== 'false';
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(GUEST_ROLE_STORAGE_KEY);
+      const valid: UserRole[] = ['Student', 'Employer', 'University', 'Admin'];
+      setGuestRole(valid.includes(stored as UserRole) ? (stored as UserRole) : null);
+    } catch {
+      setGuestRole(null);
+    } finally {
+      setIsGuestRoleResolved(true);
+    }
+  }, []);
+
   const userDocRef = useMemo(() => {
     if (!user || !firestore) return null;
     return doc(firestore, 'users', user.uid);
   }, [user, firestore]);
 
-  const { data: userData } = useDoc(userDocRef);
+  const { data: userData } = useDoc<UserDoc>(userDocRef);
 
+
+  const isGuest = isGuestModeEnabled && !user && !!guestRole;
 
   useEffect(() => {
-    if (!isUserLoading && !user) {
+    if (isUserLoading) return;
+    if (!user && !(isGuestModeEnabled && guestRole)) {
       router.push('/login');
     }
-  }, [isUserLoading, user, router]);
+  }, [isUserLoading, user, router, guestRole, isGuestModeEnabled]);
 
-  if (isUserLoading || !user) {
+  if (isUserLoading || (!user && !isGuest && !isGuestRoleResolved)) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-background">
         <div className="flex flex-col items-center gap-2">
@@ -51,9 +81,19 @@ export default function AppLayout({
       </div>
     );
   }
+
+  if (!user && !isGuest) {
+    return null;
+  }
   
   const handleSignOut = async () => {
-    if (auth) {
+    if (isGuest) {
+      try {
+        localStorage.removeItem(GUEST_ROLE_STORAGE_KEY);
+      } catch {
+        // ignore
+      }
+    } else if (auth) {
       await auth.signOut();
     }
     router.push('/login');
@@ -64,8 +104,9 @@ export default function AppLayout({
     return name.split(' ').map(n => n[0]).join('');
   }
 
+  const effectiveRole = isGuest ? guestRole : userData?.role;
   const renderNavLinks = () => {
-    switch (userData?.role) {
+    switch (effectiveRole) {
       case 'Admin':
         return (
           <>
@@ -178,7 +219,7 @@ export default function AppLayout({
                 <span className="text-xl font-bold">CertSecure</span>
               </div>
               <div className='block md:hidden'>
-                <Notifications role={userData?.role} />
+                <Notifications role={effectiveRole} />
               </div>
             </div>
           </SidebarHeader>
@@ -190,12 +231,14 @@ export default function AppLayout({
           <SidebarFooter>
             <div className="flex items-center gap-3 p-2 rounded-lg bg-background">
               <Avatar className="h-9 w-9 border-2 border-primary/50">
-                <AvatarImage src={user.photoURL ?? undefined} />
-                <AvatarFallback>{getInitials(user.displayName || user.email)}</AvatarFallback>
+                <AvatarImage src={user?.photoURL ?? undefined} />
+                <AvatarFallback>{getInitials(user?.displayName || user?.email || (isGuest ? 'Guest' : undefined))}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col truncate">
-                <span className="font-semibold truncate text-sm">{user.displayName || userData?.firstName || 'User'}</span>
-                <span className="text-xs text-muted-foreground truncate">{user.email}</span>
+                <span className="font-semibold truncate text-sm">
+                  {user?.displayName || userData?.firstName || (isGuest ? 'Guest' : 'User')}
+                </span>
+                <span className="text-xs text-muted-foreground truncate">{user?.email ?? (isGuest ? 'Guest session' : '')}</span>
               </div>
               <Button variant="ghost" size="icon" onClick={handleSignOut} className="ml-auto rounded-full h-9 w-9">
                 <LogOut className="h-5 w-5" />
@@ -209,7 +252,7 @@ export default function AppLayout({
             </header>
             <main className="flex-1 p-4 md:p-6 lg:p-8">
               <div className='hidden md:flex items-center justify-end gap-4 mb-4'>
-                  <Notifications role={userData?.role} />
+                  <Notifications role={effectiveRole} />
                   <SidebarTrigger />
               </div>
               {children}
