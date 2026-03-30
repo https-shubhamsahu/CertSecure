@@ -37,21 +37,23 @@ export default function AppLayout({
   const auth = useAuth();
   const firestore = useFirestore();
 
-  const [guestRole, setGuestRole] = useState<UserRole | null>(null);
-  const [isGuestRoleResolved, setIsGuestRoleResolved] = useState(false);
+  const [{ guestRole, isGuestRoleResolved }, setGuestState] = useState<{
+    guestRole: UserRole | null;
+    isGuestRoleResolved: boolean;
+  }>({ guestRole: null, isGuestRoleResolved: false });
 
   const isGuestModeEnabled = process.env.NEXT_PUBLIC_ENABLE_GUEST !== 'false';
 
   useEffect(() => {
+    let resolvedRole: UserRole | null = null;
     try {
       const stored = localStorage.getItem(GUEST_ROLE_STORAGE_KEY);
       const valid: UserRole[] = ['Student', 'Employer', 'University', 'Admin'];
-      setGuestRole(valid.includes(stored as UserRole) ? (stored as UserRole) : null);
+      resolvedRole = valid.includes(stored as UserRole) ? (stored as UserRole) : null;
     } catch {
-      setGuestRole(null);
-    } finally {
-      setIsGuestRoleResolved(true);
+      resolvedRole = null;
     }
+    setGuestState({ guestRole: resolvedRole, isGuestRoleResolved: true });
   }, []);
 
   const userDocRef = useMemo(() => {
