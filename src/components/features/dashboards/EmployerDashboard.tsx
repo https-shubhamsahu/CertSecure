@@ -21,19 +21,19 @@ export default function EmployerDashboard({ user }: { user: unknown }) {
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2 space-y-6">
         <div className="grid md:grid-cols-3 gap-6">
-            <Card className="bg-glass">
+      <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold text-primary">1,204</CardTitle>
                     <CardDescription>Total Verified</CardDescription>
                 </CardHeader>
             </Card>
-            <Card className="bg-glass">
+      <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold text-destructive">17</CardTitle>
                     <CardDescription>Fraudulent Detected</CardDescription>
                 </CardHeader>
             </Card>
-            <Card className="bg-glass">
+      <Card>
                 <CardHeader className="pb-2">
                     <CardTitle className="text-4xl font-bold">98.6%</CardTitle>
                     <CardDescription>Success Rate</CardDescription>
@@ -41,53 +41,55 @@ export default function EmployerDashboard({ user }: { user: unknown }) {
             </Card>
         </div>
 
-        <Card className="bg-glass">
+    <Card>
           <CardHeader>
             <CardTitle>Recent Verifications</CardTitle>
             <CardDescription>History of your recent certificate verifications.</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Certificate ID</TableHead>
-                  <TableHead>Student Name</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Date</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentVerifications.map((item) => (
-                  <TableRow key={item.id}>
-                    <TableCell className="font-mono">{item.id}</TableCell>
-                    <TableCell>{item.student}</TableCell>
-                    <TableCell>
-                      <Badge variant={
-                        item.status === 'Verified' ? 'success' :
-                        item.status === 'Pending' ? 'secondary' : 'destructive'
-                      } className="gap-1">
-                        {item.status === 'Verified' && <CheckCircle className="h-3 w-3" />}
-                        {item.status === 'Pending' && <Clock className="h-3 w-3" />}
-                        {item.status === 'Fraudulent' && <XCircle className="h-3 w-3" />}
-                        {item.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>{item.date}</TableCell>
+            <div className="-mx-2 overflow-x-auto px-2">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="whitespace-nowrap">Certificate ID</TableHead>
+                    <TableHead className="whitespace-nowrap">Student Name</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Date</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {recentVerifications.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell className="font-mono whitespace-nowrap">{item.id}</TableCell>
+                      <TableCell className="whitespace-nowrap">{item.student}</TableCell>
+                      <TableCell className="whitespace-nowrap">
+                        <Badge variant={
+                          item.status === 'Verified' ? 'success' :
+                          item.status === 'Pending' ? 'secondary' : 'destructive'
+                        } className="gap-1">
+                          {item.status === 'Verified' && <CheckCircle className="h-3 w-3" />}
+                          {item.status === 'Pending' && <Clock className="h-3 w-3" />}
+                          {item.status === 'Fraudulent' && <XCircle className="h-3 w-3" />}
+                          {item.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="whitespace-nowrap">{item.date}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </CardContent>
         </Card>
       </div>
       <div className="space-y-6">
-        <Card className="bg-glass text-center">
+        <Card className="text-center">
             <CardHeader>
                 <CardTitle>Quick Verification</CardTitle>
                 <CardDescription>Instantly verify a single certificate.</CardDescription>
             </CardHeader>
             <CardContent>
-                <Button size="lg" asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+            <Button size="lg" variant="soft" asChild className="w-full rounded-full border-primary/10 text-primary">
                     <Link href="/app/verify">
                         <Search className="mr-2 h-5 w-5"/>
                         Verify a Certificate
@@ -95,14 +97,14 @@ export default function EmployerDashboard({ user }: { user: unknown }) {
                 </Button>
             </CardContent>
         </Card>
-        <Card className="bg-glass">
+        <Card>
             <CardHeader>
                 <CardTitle>Upload Certificate</CardTitle>
                 <CardDescription>Not hiring? Upload your own certificate.</CardDescription>
             </CardHeader>
             <CardContent>
                 <Link href="/app/upload" className="flex items-center justify-center w-full">
-                    <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-muted/50 hover:bg-muted/80 transition-colors">
+              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-48 rounded-xl cursor-pointer surface-press hover:shadow-soft-sm transition-[box-shadow]">
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">
                             <FileUp className="w-10 h-10 mb-3 text-muted-foreground" />
                             <p className="mb-2 text-sm text-muted-foreground"><span className="font-semibold">Click to upload</span></p>

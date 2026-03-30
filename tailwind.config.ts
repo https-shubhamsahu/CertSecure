@@ -12,7 +12,11 @@ const config = {
   theme: {
     container: {
       center: true,
-      padding: '2rem',
+      padding: {
+        DEFAULT: '1rem',
+        sm: '1.5rem',
+        lg: '2rem',
+      },
       screens: {
         '2xl': '1400px',
       },
@@ -63,6 +67,12 @@ const config = {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
+      },
+      boxShadow: {
+        'soft-sm': 'var(--shadow-soft-sm)',
+        soft: 'var(--shadow-soft)',
+        'soft-lg': 'var(--shadow-soft-lg)',
+        'soft-inset': 'var(--shadow-soft-inset)',
       },
       keyframes: {
         'accordion-down': {

@@ -31,6 +31,15 @@
     --chart-3: 38 92% 51%;
     --chart-4: 262 84% 58%;
     --chart-5: 350 70% 55%;
+
+    --shadow-soft-sm: 6px 6px 14px hsl(var(--foreground) / 0.08),
+      -6px -6px 14px hsl(var(--background) / 0.95);
+    --shadow-soft: 10px 10px 24px hsl(var(--foreground) / 0.1),
+      -10px -10px 24px hsl(var(--background) / 0.95);
+    --shadow-soft-lg: 14px 14px 34px hsl(var(--foreground) / 0.12),
+      -14px -14px 34px hsl(var(--background) / 0.95);
+    --shadow-soft-inset: inset 4px 4px 10px hsl(var(--foreground) / 0.12),
+      inset -4px -4px 10px hsl(var(--background) / 0.95);
   }
 
   .dark {
@@ -59,6 +68,15 @@
     --chart-3: 42 94% 55%;
     --chart-4: 262 84% 68%;
     --chart-5: 350 70% 65%;
+
+    --shadow-soft-sm: 6px 6px 14px hsl(var(--background) / 0.65),
+      -6px -6px 14px hsl(var(--foreground) / 0.03);
+    --shadow-soft: 10px 10px 24px hsl(var(--background) / 0.7),
+      -10px -10px 24px hsl(var(--foreground) / 0.04);
+    --shadow-soft-lg: 14px 14px 34px hsl(var(--background) / 0.75),
+      -14px -14px 34px hsl(var(--foreground) / 0.05);
+    --shadow-soft-inset: inset 4px 4px 10px hsl(var(--background) / 0.75),
+      inset -4px -4px 10px hsl(var(--foreground) / 0.05);
   }
 }
 
@@ -73,8 +91,21 @@
 
 @layer utilities {
   .bg-glass {
-    @apply bg-card/60 backdrop-blur-xl border;
+    @apply bg-card/80 border border-border/70 shadow-soft-sm;
   }
+
+  .surface {
+    @apply bg-card border border-border/70 shadow-soft-sm;
+  }
+
+  .surface-float {
+    @apply bg-card border border-border/70 shadow-soft;
+  }
+
+  .surface-press {
+    @apply bg-card border border-border/70 shadow-soft-inset;
+  }
+
   .bg-gradient-primary {
     @apply bg-gradient-to-br from-primary to-purple-600;
   }

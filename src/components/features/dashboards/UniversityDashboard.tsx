@@ -21,7 +21,7 @@ export default function UniversityDashboard({ user }: { user: unknown }) {
     return (
         <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-glass">
+                <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle>Bulk Certificate Upload</CardTitle>
@@ -30,12 +30,12 @@ export default function UniversityDashboard({ user }: { user: unknown }) {
                         <CardDescription>Upload multiple certificates at once.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+                        <Button asChild variant="soft" className="w-full rounded-full border-primary/10 text-primary">
                             <Link href="/app/upload">Upload Now</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-glass">
+                <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle>Student Database</CardTitle>
@@ -44,12 +44,12 @@ export default function UniversityDashboard({ user }: { user: unknown }) {
                         <CardDescription>Manage student records and credentials.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+                        <Button asChild variant="soft" className="w-full rounded-full border-primary/10 text-primary">
                             <Link href="/app/students">Manage Students</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-glass">
+                <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle>Certificate Issuance</CardTitle>
@@ -58,12 +58,12 @@ export default function UniversityDashboard({ user }: { user: unknown }) {
                         <CardDescription>Issue new digital certificates securely.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+                        <Button asChild variant="soft" className="w-full rounded-full border-primary/10 text-primary">
                             <Link href="/app/upload">Issue Certificate</Link>
                         </Button>
                     </CardContent>
                 </Card>
-                <Card className="bg-glass">
+                <Card>
                     <CardHeader>
                         <div className="flex items-center justify-between">
                             <CardTitle>Analytics & Reports</CardTitle>
@@ -72,14 +72,14 @@ export default function UniversityDashboard({ user }: { user: unknown }) {
                         <CardDescription>View issuance trends and statistics.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button asChild className="w-full bg-gradient-primary text-primary-foreground bg-gradient-primary-hover">
+                        <Button asChild variant="soft" className="w-full rounded-full border-primary/10 text-primary">
                             <Link href="/app/analytics">View Analytics</Link>
                         </Button>
                     </CardContent>
                 </Card>
             </div>
             
-            <Card className="bg-glass">
+            <Card>
                 <CardHeader>
                     <CardTitle>Monthly Issuance Analytics</CardTitle>
                     <CardDescription>Certificates issued over the last 6 months.</CardDescription>

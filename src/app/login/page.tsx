@@ -87,10 +87,10 @@ export default function LoginPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full bg-background p-4 overflow-hidden">
         {/* Background Gradients */}
-        <div className="absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl opacity-50" />
-        <div className="absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl opacity-50" />
+        <div className="pointer-events-none absolute top-0 left-0 -translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-primary/15 rounded-full blur-3xl opacity-40" />
+        <div className="pointer-events-none absolute bottom-0 right-0 translate-x-1/4 translate-y-1/4 w-96 h-96 bg-accent/15 rounded-full blur-3xl opacity-40" />
 
-      <Card className="w-full max-w-md z-10 bg-glass border-primary/20 shadow-2xl">
+      <Card className="w-full max-w-[420px] sm:max-w-md z-10 shadow-soft-lg">
         <CardHeader className="text-center">
           <div className="mx-auto bg-primary/10 border border-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center mb-4">
             <ShieldCheck className="h-8 w-8" />
@@ -110,7 +110,6 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 autoComplete="email"
-                className="bg-background/70"
               />
             </div>
             <div className="space-y-2">
@@ -123,18 +122,15 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
-                className="bg-background/70"
               />
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full group transition-all duration-300 ease-in-out bg-gradient-primary text-primary-foreground bg-gradient-primary-hover" disabled={isLoading}>
+            <Button type="submit" variant="soft" className="w-full rounded-full border-primary/20 text-primary" disabled={isLoading}>
               {isLoading ? 'Signing In...' : (
                 <>
-                  <span className="bg-left-bottom bg-gradient-to-r from-primary to-accent bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500">
-                    Sign In
-                  </span>
-                  <LogIn className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span>Sign In</span>
+                  <LogIn className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>
@@ -148,7 +144,7 @@ export default function LoginPage() {
         </form>
       </Card>
 
-      <Card className="w-full max-w-md mt-6 z-10 bg-glass border-primary/10 shadow-xl">
+      <Card className="w-full max-w-[420px] sm:max-w-md mt-6 z-10">
         <CardHeader>
           <div className='flex items-center gap-3'>
             <Users className="h-6 w-6 text-primary" />
@@ -165,16 +161,16 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col gap-2">
           <p className="text-xs text-muted-foreground">Or continue without an account:</p>
           <div className="grid w-full grid-cols-2 gap-2">
-            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Admin')}>
+            <Button type="button" variant="soft" className="border-primary/10" onClick={() => handleGuestLogin('Admin')}>
               Guest Admin
             </Button>
-            <Button type="button" variant="outline" onClick={() => handleGuestLogin('University')}>
+            <Button type="button" variant="soft" className="border-primary/10" onClick={() => handleGuestLogin('University')}>
               Guest University
             </Button>
-            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Employer')}>
+            <Button type="button" variant="soft" className="border-primary/10" onClick={() => handleGuestLogin('Employer')}>
               Guest Employer
             </Button>
-            <Button type="button" variant="outline" onClick={() => handleGuestLogin('Student')}>
+            <Button type="button" variant="soft" className="border-primary/10" onClick={() => handleGuestLogin('Student')}>
               Guest Student
             </Button>
           </div>

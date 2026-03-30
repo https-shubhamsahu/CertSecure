@@ -19,18 +19,18 @@ export default function StudentDashboard({ user }: { user: unknown }) {
     void user;
     return (
         <div className="grid gap-6">
-            <Card className="bg-gradient-to-tr from-primary to-purple-600 text-white shadow-2xl">
+            <Card className="shadow-soft-lg">
                 <CardHeader>
                     <CardTitle className="text-3xl">Your Digital Portfolio</CardTitle>
-                    <CardDescription className="text-primary-foreground/80">Manage, share, and track your verified certificates.</CardDescription>
+                    <CardDescription>Manage, share, and track your verified certificates.</CardDescription>
                 </CardHeader>
                 <CardContent className="flex flex-col sm:flex-row gap-4">
-                    <Button asChild variant="secondary" className="bg-white/20 hover:bg-white/30 text-white border-white/30">
+                    <Button asChild variant="soft" className="rounded-full border-primary/10 text-primary">
                         <Link href="/app/upload">
                             <FileUp className="mr-2 h-4 w-4" /> Upload New Certificate
                         </Link>
                     </Button>
-                    <Button variant="outline" className="bg-transparent hover:bg-white/10 text-white border-white/50">
+                    <Button variant="soft" className="rounded-full border-primary/10">
                         <Share2 className="mr-2 h-4 w-4" /> Share My Portfolio
                     </Button>
                 </CardContent>
@@ -42,7 +42,7 @@ export default function StudentDashboard({ user }: { user: unknown }) {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {certificates.map(cert => (
-                        <Card key={cert.id} className="overflow-hidden group transition-all hover:shadow-xl hover:-translate-y-1 bg-glass">
+                        <Card key={cert.id} className="overflow-hidden group transition-all hover:shadow-soft hover:-translate-y-1">
                              <CardContent className="p-0 relative">
                                 <Image 
                                     src={cert.image}

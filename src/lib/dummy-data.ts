@@ -19,6 +19,35 @@ export interface CertificateData {
 }
 
 export const DUMMY_CERTIFICATES: Record<string, CertificateData> = {
+  'authentic_certificate.jpg': {
+    id: 'CS-VER-2026-001',
+    studentName: 'Shubham Sahu',
+    graduationDate: '2026-01-31',
+    degree: 'Azure AI Fundamentals',
+    gpa: 0,
+    universityName: 'Microsoft',
+    registrationNumber: 'w6k9n-48DB',
+    sealDescription: 'Microsoft Certified Fundamentals badge and Microsoft branding.',
+    status: 'VERIFIED',
+    fraudIndicators: [],
+    extractedText: `
+Microsoft Certified
+Azure AI Fundamentals
+
+Shubham Sahu
+has successfully completed the requirements of
+Azure AI Fundamentals
+
+Date Issued: January 31, 2026
+
+Satya Nadella
+Chief Executive Officer
+
+Microsoft Certified Fundamentals
+verify.certiport.com: w6k9n-48DB
+`,
+    sha512Hash: '1'.repeat(128),
+  },
   'authentic_certificate.pdf': {
     id: 'CS-VER-2024-001',
     studentName: 'Amelia Chen',
@@ -44,30 +73,79 @@ Registration #: MU-REG-847291
     sha512Hash: 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4',
   },
   'fraudulent_certificate.jpg': {
-    id: 'CS-VER-2024-002',
-    studentName: 'Benjamin Lee',
-    graduationDate: '2023-12-20',
-    degree: 'Master of Business Administration',
-    gpa: 3.5,
-    universityName: 'Gotham Institute of Technology',
-    registrationNumber: 'GIT-REG-553810',
-    sealDescription: 'Institute seal with gear and cog design.',
+    id: 'CS-VER-2026-002',
+    studentName: 'Shubham Sharma',
+    graduationDate: '2022-07-15',
+    degree: 'Indian Administrative Service (IAS) Officer',
+    gpa: 0,
+    universityName: 'Government of India (Demo)',
+    registrationNumber: 'N/A',
+    sealDescription: 'Lion Capital emblem with “सत्यमेव जयते” and ornate border.',
     status: 'FRAUDULENT',
     fraudIndicators: [
-      'Font mismatch detected in "Date" field.',
-      'Seal checksum validation failed.',
-      'Alignment inconsistencies in header.',
+      'No official file/roll number or verification QR present.',
+      'Issuer/format mismatch for an IAS appointment document.',
+      'Signatures cannot be validated against a trusted registry.',
     ],
     extractedText: `
-Gotham Institute of Technology
------------------------------
-Certificate of Completion
-Benjamin Lee
-Master of Business Administration
-Date: 2023-12-20 (Altered)
-GPA: 3.5
+CERTIFICATE OF ACHIEVEMENT
+
+This is to Certify that
+Shubham Sharma
+has successfully qualified and been appointed as an
+INDIAN ADMINISTRATIVE SERVICE (IAS) OFFICER
+
+In Recognition of His Outstanding Achievement and Dedication to Public Service
+
+Date: 15th July 2022
+Place: New Delhi
+
+Rajiv Verma
+Chairman, UPSC
+
+R. Kumar
+Cabinet Secretary
 `,
-    sha512Hash: 'f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1f6e5d4c3b2a1',
+    sha512Hash: '2'.repeat(128),
+  },
+  'suspicious_certificate.jpg': {
+    id: 'CS-VER-2026-003',
+    studentName: 'Shubham Sahu',
+    graduationDate: 'N/A',
+    degree: 'Certified Nonchalant Individual',
+    gpa: 0,
+    universityName: 'N/A',
+    registrationNumber: 'N/A',
+    sealDescription: '“Certified Nonchalant” gold seal with decorative border.',
+    status: 'SUSPICIOUS',
+    fraudIndicators: [
+      'Non-standard certificate type (no issuing organization details).',
+      'Missing date and unique verification identifier.',
+      'Content appears informal/humorous; manual review recommended.',
+    ],
+    extractedText: `
+CERTIFICATE OF NONCHALANCE
+
+This is to proudly certify that
+Shubham Sahu
+has successfully demonstrated an exceptional level of calmness, effortless composure, and elite “I don’t stress, I observe” energy.
+
+Awarded the title of
+Certified Nonchalant Individual
+
+For consistently maintaining a relaxed mindset,
+staying unbothered in chaotic situations,
+and mastering the art of low-key confidence.
+
+Your ability to remain composed when others panic
+is officially recognized and highly respected.
+
+Date: __________
+Authorized Signature: Chill Vibes
+
+“Too calm to care, too focused to break.”
+`,
+    sha512Hash: '3'.repeat(128),
   },
   'suspicious_certificate.png': {
     id: 'CS-VER-2024-003',

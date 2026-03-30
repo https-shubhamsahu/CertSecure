@@ -121,10 +121,10 @@ export default function RegisterPage() {
   return (
     <div className="flex items-center justify-center min-h-screen w-full bg-background p-4 overflow-hidden">
       {/* Background Gradients */}
-      <div className="absolute top-0 right-0 -translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-primary/20 rounded-full blur-3xl opacity-50" />
-      <div className="absolute bottom-0 left-0 translate-x-1/4 translate-y-1/4 w-96 h-96 bg-accent/20 rounded-full blur-3xl opacity-50" />
+      <div className="pointer-events-none absolute top-0 right-0 -translate-x-1/4 -translate-y-1/4 w-96 h-96 bg-primary/15 rounded-full blur-3xl opacity-40" />
+      <div className="pointer-events-none absolute bottom-0 left-0 translate-x-1/4 translate-y-1/4 w-96 h-96 bg-accent/15 rounded-full blur-3xl opacity-40" />
 
-      <Card className="w-full max-w-lg z-10 bg-glass border-primary/20 shadow-2xl">
+      <Card className="w-full max-w-[520px] sm:max-w-lg z-10 shadow-soft-lg">
         <CardHeader className="text-center">
           <div className="mx-auto bg-primary/10 border border-primary/20 text-primary rounded-full h-16 w-16 flex items-center justify-center mb-4">
             <UserPlus className="h-8 w-8" />
@@ -137,28 +137,28 @@ export default function RegisterPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="firstName">First Name</Label>
-                <Input id="firstName" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} className="bg-background/70"/>
+                <Input id="firstName" placeholder="John" required value={firstName} onChange={(e) => setFirstName(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="lastName">Last Name</Label>
-                <Input id="lastName" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} className="bg-background/70"/>
+                <Input id="lastName" placeholder="Doe" required value={lastName} onChange={(e) => setLastName(e.target.value)} />
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email Address</Label>
-              <Input id="email" type="email" placeholder="name@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} className="bg-background/70"/>
+              <Input id="email" type="email" placeholder="name@example.com" required value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} className="bg-background/70"/>
+              <Input id="password" type="password" placeholder="••••••••" required value={password} onChange={(e) => setPassword(e.target.value)} />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="role">I am a...</Label>
               <Select onValueChange={(value: UserRole) => setRole(value)} value={role}>
-                <SelectTrigger id="role" className="bg-background/70">
+                <SelectTrigger id="role">
                   <SelectValue placeholder="Select your role" />
                 </SelectTrigger>
                 <SelectContent>
@@ -171,13 +171,11 @@ export default function RegisterPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full group transition-all duration-300 ease-in-out bg-gradient-primary text-primary-foreground bg-gradient-primary-hover" disabled={isLoading}>
+            <Button type="submit" variant="soft" className="w-full rounded-full border-primary/20 text-primary" disabled={isLoading}>
               {isLoading ? 'Creating Account...' : (
                 <>
-                  <span>
-                    Register
-                  </span>
-                  <UserPlus className="ml-2 h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                  <span>Register</span>
+                  <UserPlus className="ml-2 h-4 w-4" />
                 </>
               )}
             </Button>

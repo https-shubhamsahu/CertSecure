@@ -34,16 +34,16 @@ export default function VerificationTrendChart({ data }: { data: VerificationTre
                 />
                 <defs>
                     <linearGradient id="colorVerified" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#2563eb" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="hsl(var(--chart-1))" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="colorFraud" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#ef4444" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#ef4444" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="hsl(var(--destructive))" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="hsl(var(--destructive))" stopOpacity={0}/>
                     </linearGradient>
                 </defs>
-                <Area type="monotone" dataKey="verified" stroke="#2563eb" fill="url(#colorVerified)" />
-                <Area type="monotone" dataKey="fraud" stroke="#ef4444" fill="url(#colorFraud)" />
+                <Area type="monotone" dataKey="verified" stroke="hsl(var(--chart-1))" fill="url(#colorVerified)" />
+                <Area type="monotone" dataKey="fraud" stroke="hsl(var(--destructive))" fill="url(#colorFraud)" />
             </AreaChart>
         </ResponsiveContainer>
     );

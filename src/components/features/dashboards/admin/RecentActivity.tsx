@@ -21,7 +21,7 @@ export default function RecentActivity() {
             <div className="space-y-4">
                 {recentActivity.map((item) => (
                     <div key={item.id} className="flex items-start gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full surface-press">
                            {activityIcons[item.status]}
                         </div>
                         <div className="flex-1">

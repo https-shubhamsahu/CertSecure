@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useUser } from '@/firebase';
 import { Sidebar, SidebarProvider, SidebarInset, SidebarTrigger, SidebarHeader, SidebarContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from '@/components/ui/sidebar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { LogOut, Home, Upload, ShieldCheck, BarChart2, Users, Database } from 'lucide-react';
+import { LogOut, Home, Upload, ShieldCheck, BarChart2, Users, Database, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/firebase';
 import Notifications from '@/components/features/Notifications';
@@ -109,17 +109,27 @@ export default function AppLayout({
 
   const effectiveRole = isGuest ? guestRole : userData?.role;
   const renderNavLinks = () => {
-    switch (effectiveRole) {
-      case 'Admin':
-        return (
-          <>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
-                <Home />
-                <span>Dashboard</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-             <SidebarMenuItem>
+    const settingsNav = (
+      <SidebarMenuItem>
+        <SidebarMenuButton tooltip="Settings" isActive={pathname === '/app/settings'} onClick={() => router.push('/app/settings')}>
+          <Settings />
+          <span>Settings</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+
+    const baseNav = (() => {
+      switch (effectiveRole) {
+        case 'Admin':
+          return (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
+                  <Home />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Analytics" isActive={pathname === '/app/analytics'} onClick={() => router.push('/app/analytics')}>
                   <BarChart2 />
                   <span>Analytics</span>
@@ -131,24 +141,24 @@ export default function AppLayout({
                   <span>Users</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-          </>
-        );
-      case 'University':
-        return (
-          <>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
-                <Home />
-                <span>Dashboard</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Upload Certificate" isActive={pathname === '/app/upload'} onClick={() => router.push('/app/upload')}>
-                <Upload />
-                <span>Upload</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-             <SidebarMenuItem>
+            </>
+          );
+        case 'University':
+          return (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
+                  <Home />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Upload Certificate" isActive={pathname === '/app/upload'} onClick={() => router.push('/app/upload')}>
+                  <Upload />
+                  <span>Upload</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Students" isActive={pathname === '/app/students'} onClick={() => router.push('/app/students')}>
                   <Database />
                   <span>Students</span>
@@ -160,52 +170,62 @@ export default function AppLayout({
                   <span>Analytics</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-          </>
-        );
+            </>
+          );
         case 'Employer':
-            return (
-              <>
-                <SidebarMenuItem>
-                  <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
-                    <Home />
-                    <span>Dashboard</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton tooltip="Verify Certificate" isActive={pathname === '/app/verify'} onClick={() => router.push('/app/verify')}>
-                    <ShieldCheck />
-                    <span>Verify</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </>
-            );
-        case 'Student':
-        return (
-          <>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
-                <Home />
-                <span>Dashboard</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton tooltip="Upload Certificate" isActive={pathname === '/app/upload'} onClick={() => router.push('/app/upload')}>
-                <Upload />
-                <span>Upload</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </>
-        );
-      default:
-        return (
-            <SidebarMenuItem>
+          return (
+            <>
+              <SidebarMenuItem>
                 <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
-                    <Home />
-                    <span>Dashboard</span>
+                  <Home />
+                  <span>Dashboard</span>
                 </SidebarMenuButton>
-            </SidebarMenuItem>
-        );
-    }
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Verify Certificate" isActive={pathname === '/app/verify'} onClick={() => router.push('/app/verify')}>
+                  <ShieldCheck />
+                  <span>Verify</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          );
+        case 'Student':
+          return (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
+                  <Home />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Upload Certificate" isActive={pathname === '/app/upload'} onClick={() => router.push('/app/upload')}>
+                  <Upload />
+                  <span>Upload</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          );
+        default:
+          return (
+            <>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Dashboard" isActive={pathname === '/app'} onClick={() => router.push('/app')}>
+                  <Home />
+                  <span>Dashboard</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </>
+          );
+      }
+    })();
+
+    return (
+      <>
+        {baseNav}
+        {settingsNav}
+      </>
+    );
   }
 
 
@@ -253,7 +273,7 @@ export default function AppLayout({
             <header className='flex items-center justify-end p-2 md:hidden'>
               <SidebarTrigger />
             </header>
-            <main className="flex-1 p-4 md:p-6 lg:p-8">
+            <main className="flex-1 p-3 sm:p-4 md:p-6 lg:p-8">
               <div className='hidden md:flex items-center justify-end gap-4 mb-4'>
                   <Notifications role={effectiveRole} />
                   <SidebarTrigger />
