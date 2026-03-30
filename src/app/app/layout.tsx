@@ -66,10 +66,11 @@ export default function AppLayout({
 
   useEffect(() => {
     if (isUserLoading) return;
+    if (!isGuestRoleResolved) return;
     if (!user && !(isGuestModeEnabled && guestRole)) {
       router.push('/login');
     }
-  }, [isUserLoading, user, router, guestRole, isGuestModeEnabled]);
+  }, [isUserLoading, user, router, guestRole, isGuestModeEnabled, isGuestRoleResolved]);
 
   if (isUserLoading || (!user && !isGuest && !isGuestRoleResolved)) {
     return (
