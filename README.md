@@ -1,90 +1,46 @@
-![CertSecure Demo](public/readme-banner.svg)
+# CertSecure
 
-<div align="center">
+## Project Name
+CertSecure
 
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
-[![React](https://img.shields.io/badge/React-18-149ECA?logo=react&logoColor=white)](https://react.dev/)
-[![Firebase](https://img.shields.io/badge/Firebase-SDK-FFA000?logo=firebase&logoColor=black)](https://firebase.google.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-Strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+## About the Project
+CertSecure is a TypeScript-based web application built with Next.js and Firebase that demonstrates secure certificate lifecycle workflows. It provides role-based dashboard experiences (Admin, University, Employer, and Student), certificate upload and verification flows, and supporting security tooling.
 
-</div>
+## Problem
+Academic and professional certificate verification is often slow, manual, and vulnerable to fraud. Institutions, employers, and candidates face challenges such as:
 
-CertSecure Demo is a Next.js (App Router) app that showcases certificate upload + verification flows and role-based dashboards, with Firebase Auth + Firestore integration.
+- Difficulty validating certificate authenticity quickly.
+- Fragmented processes across stakeholders.
+- Risk of forged or tampered credentials.
+- Lack of clear role-based workflow for issuing and verifying credentials.
 
-## Features
+## Solution
+CertSecure addresses these issues by providing a centralized, modern verification platform with:
 
-| Area | What you can do |
-| --- | --- |
-| Authentication | Email/password sign in + sign up via Firebase Auth |
-| Dashboards | Admin / University / Employer / Student dashboard entry points |
-| Certificate flows | Upload + verification demo UI (includes sample scenarios) |
-| Rules tooling | Security rules generator flow (Genkit) |
+- **Role-based dashboards** for Admin, University, Employer, and Student users.
+- **Certificate upload and verification flows** to simulate end-to-end validation.
+- **Firebase-backed authentication and data storage** for secure identity and data handling.
+- **Security rules tooling** support to help enforce access and data protection policies.
 
-## Quickstart
+This improves trust, reduces manual verification time, and creates a scalable foundation for digital certificate validation.
 
-Prerequisites:
+## Tech Stack
+- **Frontend:** Next.js (App Router), React, TypeScript
+- **Backend Services:** Firebase Auth, Firestore, Firebase Storage
+- **Styling/UI:** Tailwind CSS, Radix UI
+- **Optional AI/Automation:** Genkit flows
 
-- Node.js 18+ (recommended)
-- npm
-
-Install:
-
+## How to Run
 ```bash
 npm install
-```
-
-Run (dev):
-
-```bash
 npm run dev
 ```
 
-Open:
+Open: `http://localhost:9002`
 
-- http://localhost:9002
-
-## Scripts
-
-```bash
-npm run dev        # Next.js dev server (Turbopack) on port 9002
-npm run lint       # ESLint
-npm run typecheck  # TypeScript (tsc --noEmit)
-npm run build      # Production build
-npm run start      # Serve the production build
-```
-
-Genkit (optional):
-
-```bash
-npm run genkit:dev
-npm run genkit:watch
-```
-
-## Architecture (high level)
-
-```mermaid
-flowchart LR
-	U[User Browser] -->|Next.js App Router| N[Next.js UI]
-	N -->|Auth| FA[Firebase Auth]
-	N -->|Reads/Writes| FS[Firestore]
-	N -->|Uploads| ST[Firebase Storage]
-	N -->|Optional| GK[Genkit flows]
-```
-
-## Project structure
-
-- `src/app/` — Next.js routes (App Router)
-- `src/components/` — UI + feature components
-- `src/firebase/` — Firebase initialization, providers, Firestore hooks
-- `src/ai/` — Genkit configuration + flows
-- `docs/` — blueprint + backend notes
-
-## Firebase configuration
-
-- Client config is in `src/firebase/config.ts`.
-- In production on Firebase App Hosting, `initializeApp()` may be auto-configured via hosting-provided environment.
-- In local builds, the app falls back to the config object (you may see a build-time warning during prerender; the build still succeeds).
-
-## Troubleshooting
-
-- Port in dev is set in `package.json` (`next dev --port 9002`). If needed, change it there.
+## Future Improvements
+- Add production-grade cryptographic signing/verification for certificates.
+- Introduce audit trails and immutable verification logs.
+- Add organization-level onboarding and management workflows.
+- Expand reporting/analytics for verification activity.
+- Provide API integrations for external university and HR systems.
